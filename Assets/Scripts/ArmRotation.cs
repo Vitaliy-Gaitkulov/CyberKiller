@@ -6,6 +6,7 @@ public class ArmRotation : MonoBehaviour
 {
     public int rotationOffset = 0;
     public Joystick FireJoystick;
+    public Vector3 difference;
     void Awake() {
         FireJoystick = GameObject.FindWithTag("FireJoystick").GetComponent<FixedJoystick>();
         
@@ -18,7 +19,7 @@ public class ArmRotation : MonoBehaviour
         // Vector3 difference = Camera.main.ScreenToWorldPoint (new Vector3(FireJoystick.Horizontal, FireJoystick.Vertical)) - transform.position;
         // Debug.Log(FireJoystick.Horizontal);
         // Debug.Log(FireJoystick.Vertical);
-        Vector3 difference = new Vector3(FireJoystick.Horizontal, FireJoystick.Vertical);
+        difference = new Vector3(FireJoystick.Horizontal, FireJoystick.Vertical);
 
         // Vector3 difference = Camera.main.ScreenToWorldPoint (Input.mousePosition) - transform.position;
         // Debug.Log(Camera.main.ScreenToWorldPoint (Input.mousePosition) - transform.position);

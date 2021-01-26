@@ -9,6 +9,8 @@ TagManager:
   - joystick
   - FireJoystick
   - BtnFire
+  - Arm
+  - Enemy
   layers:
   - Default
   - TransparentFX
