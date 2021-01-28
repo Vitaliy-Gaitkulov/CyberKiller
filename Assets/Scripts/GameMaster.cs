@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class GameMaster : MonoBehaviour
 {
+    public GameObject PlayerPrefab;
+    public GameObject GameCanvas;
+    public GameObject SceneCamera;
+
     public static GameMaster gm;
     AudioSource audioData;
 
@@ -19,6 +23,7 @@ public class GameMaster : MonoBehaviour
     public static int Money;
 
     void Awake(){
+        GameCanvas.SetActive(true);
         if (gm == null){
             gm = GameObject.FindGameObjectWithTag ("GM").GetComponent<GameMaster>();
         }
@@ -74,12 +79,19 @@ public class GameMaster : MonoBehaviour
         gameOverUI.SetActive(true);
     }
 
+    public void SpawnPlayer()
+    {
+        PhotonNetwork.Instantiate(PlayerPrefab.name, new Vector3(spawnPoint.position.x, spawnPoint.position.y), Quaternion.identity, 0);
+        GameCanvas.SetActive(false);
+    }
+
     public IEnumerator _RespawnPlayer (){
         audioManager.PlaySound(respawnCountdownSoundName);
         yield return new WaitForSeconds (spawnDelay);
 
         audioManager.PlaySound(spawnSoundName);
-        Instantiate (playerPrefab, spawnPoint.position, spawnPoint.rotation);
+       // Instantiate (playerPrefab, spawnPoint.position, spawnPoint.rotation);
+
         Transform clone = Instantiate(spawnPrefab, spawnPoint.position, spawnPoint.rotation) as Transform;
         Destroy (clone.gameObject, 3f);
     }

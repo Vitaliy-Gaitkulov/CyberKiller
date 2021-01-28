@@ -219,11 +219,10 @@
      <Compile Include="Assets\Scripts\LivesCounterUI.cs" />
      <Compile Include="Assets\Scripts\MenuManager.cs" />
      <Compile Include="Assets\Scripts\MoneyCounterUI.cs" />
-     <Compile Include="Assets\Scripts\MovePlayerJoystick.cs" />
      <Compile Include="Assets\Scripts\MoveTrail.cs" />
      <Compile Include="Assets\Scripts\Parallaxind.cs" />
-     <Compile Include="Assets\Scripts\PlatformerCharacter2D.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
+     <Compile Include="Assets\Scripts\PlayerMove.cs" />
      <Compile Include="Assets\Scripts\PlayerStats.cs" />
      <Compile Include="Assets\Scripts\StatusIndicator.cs" />
      <Compile Include="Assets\Scripts\Tiling.cs" />
