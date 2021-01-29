@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameMaster : MonoBehaviour
 {
@@ -36,6 +37,8 @@ public class GameMaster : MonoBehaviour
     public string respawnCountdownSoundName = "RespawnCountdown";
     public string spawnSoundName = "Spawn";
 
+    public Text PingText;
+
     public string gameOverSoundName = "GameOver";
 
     public CameraShake cameraShake;
@@ -60,6 +63,11 @@ public class GameMaster : MonoBehaviour
         Money = startingMoney;
 
         audioManager = AudioManager.instance;
+    }
+
+    private void Update()
+    {
+        PingText.text = "Ping: " + PhotonNetwork.GetPing();
     }
 
     public Transform enemyDeathParticles;
