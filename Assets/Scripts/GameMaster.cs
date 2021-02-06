@@ -57,6 +57,12 @@ public class GameMaster : MonoBehaviour
 
     private AudioManager audioManager;
 
+    public GameObject disconnectUI;
+    private bool Off = false;
+
+    public GameObject PlayerFeed;
+    public GameObject FeedGrid;
+
     void Start(){
         _remainingLives = maxLives;
 
@@ -69,6 +75,41 @@ public class GameMaster : MonoBehaviour
     {
         PingText.text = "Ping: " + PhotonNetwork.GetPing();
     }
+
+    public void CheckInputOff()
+    {
+        if (Off)
+        {
+            disconnectUI.SetActive(false);
+            Off = false;
+        }else if(!Off)
+        {
+            disconnectUI.SetActive(true);
+            Off = true;
+        }
+    }
+
+    public void LeaveRoom()
+    {
+        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.LoadLevel("MainMenu");
+    }
+
+    private void OnPhotonPlayerConnected(PhotonPlayer player)
+    {
+        GameObject obj = Instantiate(PlayerFeed, new Vector2(0, 0), Quaternion.identity);
+        obj.transform.SetParent(FeedGrid.transform, false);
+        obj.GetComponent<Text>().text = player.name + "joined the game";
+        obj.GetComponent<Text>().color = Color.green;
+    }
+    private void OnPhotonPlayerDisconnected(PhotonPlayer player)
+    {
+        GameObject obj = Instantiate(PlayerFeed, new Vector2(0, 0), Quaternion.identity);
+        obj.transform.SetParent(FeedGrid.transform, false);
+        obj.GetComponent<Text>().text = player.name + "left the game";
+        obj.GetComponent<Text>().color = Color.red;
+    }
+
 
     public Transform enemyDeathParticles;
 

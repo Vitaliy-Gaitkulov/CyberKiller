@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Weapon : MonoBehaviour
+public class Weapon : Photon.MonoBehaviour, IPunObservable
 {
+
+    public Transform pistolGun;
+
     public float fireRate = 0;
     public int Damage = 10;
     public LayerMask whatToHit;
@@ -28,20 +31,19 @@ public class Weapon : MonoBehaviour
     public Transform firePointHelper;
     public Transform aim;
 
-    public Joystick fire;
+    private Joystick fire;
 
     AudioManager audioManager;
+
     
-    // Start is called before the first frame update
     void Awake()
     {
-        firePoint = transform.Find("FirePoint");
+        //firePoint = transform.Find("FirePoint");
         if (firePoint == null){
             Debug.LogError ("No firePoint?");
         }
         Arm = GameObject.FindWithTag("Arm").GetComponent<Transform>();
         fire = GameObject.FindWithTag("FireJoystick").GetComponent<FixedJoystick>();
-        // fire.onClick.AddListener(Shoot);
     }
 
     void Start(){
@@ -57,29 +59,34 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-
     void Update() {
-        var tapCount = Input.touchCount;
-        if(tapCount > 1) {
-            var touch1 = Input.GetTouch(0);
-            var touch2 = Input.GetTouch(1);
+        if (photonView.isMine)
+        {
+            var tapCount = Input.touchCount;
+            if(tapCount > 1) {
+                var touch1 = Input.GetTouch(0);
+                var touch2 = Input.GetTouch(1);
+            }
         }
+
     }
 
     void FixedUpdate()
     {
+        if (photonView.isMine)
+        {
+            if (Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.2){
+                aim.gameObject.SetActive(true);
+            }else{
+                aim.gameObject.SetActive(false);
+            }
 
-        if(Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.2){
-            aim.gameObject.SetActive(true);
-        }else{
-            aim.gameObject.SetActive(false);
+            if(Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.5 && Time.time > timeToFire){
+                timeToFire = Time.time +1/fireRate;        
+                Shoot();
+            }
         }
 
-        if(Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.5 && Time.time > timeToFire){
-            timeToFire = Time.time +1/fireRate;        
-            Shoot();
-        }
     }
 
     void Shoot(){
@@ -142,5 +149,17 @@ public class Weapon : MonoBehaviour
         camShake.Shake(camShakeAmt, camShakeLength);
 
         audioManager.PlaySound(weaponShootSound);
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.isWriting)
+        {
+            stream.SendNext(BulletTrailPrefab.position);
+        }
+        else if (stream.isReading)
+        {
+            transform.position = (Vector3)stream.ReceiveNext();
+        }
     }
 }

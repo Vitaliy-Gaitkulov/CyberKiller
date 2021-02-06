@@ -44,4 +44,5 @@ MonoBehaviour:
   - RequestForPickupTimes
   - TaggedPlayer
   - Flip
+  - CheckInputArm
   DisableAutoOpenWizard: 1
