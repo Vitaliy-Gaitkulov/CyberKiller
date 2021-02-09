@@ -14,7 +14,7 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
 
     public Transform Arm;
 
-    public Transform BulletTrailPrefab;
+    //public GameObject BulletTrailPrefab;
     public Transform HitPrefab;
     public Transform MuzzleFlashPrefab;
     float timeToSpawnEffect = 0;
@@ -31,11 +31,14 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
     public Transform firePointHelper;
     public Transform aim;
 
+
     private Joystick fire;
 
     AudioManager audioManager;
 
-    
+    //public PhotonView photonView;
+
+
     void Awake()
     {
         //firePoint = transform.Find("FirePoint");
@@ -82,13 +85,14 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
             }
 
             if(Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.5 && Time.time > timeToFire){
-                timeToFire = Time.time +1/fireRate;        
-                Shoot();
+                timeToFire = Time.time +1/fireRate;
+                photonView.RPC("Shoot", PhotonTargets.AllBuffered);
             }
         }
 
     }
-
+    
+    [PunRPC]
     void Shoot(){
         Vector2 mousePosition = new Vector2 (firePoint.position.x, firePoint.position.y);
 
@@ -100,7 +104,7 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
         {
             Vector3 hitPos;
             Vector3 hitNormal;
-
+           /*
             if (hit.collider != null) {
                 Enemy enemy = hit.collider.GetComponent<Enemy>();
                 if (enemy != null){
@@ -118,13 +122,24 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
                 hitNormal = hit.normal;
             }
 
-            Effect(hitPos, hitNormal);
+            */
+
+            //Effect(hitPos, hitNormal);
             timeToSpawnEffect = Time.time + 1/effectSpawnRate;
+
+
+
+
+            GameObject trail = PhotonNetwork.Instantiate("BulletTrail", mousePosition, firePoint.rotation, 0) as GameObject;
+            trail.GetComponent<Rigidbody2D>().AddForce((aimPointPosition - mousePosition) * 100f);
+
+            //photonView.RPC("DestroyTrail", PhotonTargets.AllBuffered);
         }
     }
 
+    /*
     void Effect (Vector3 hitPos, Vector3 hitNormal){
-        Transform trail = Instantiate (BulletTrailPrefab, firePoint.position, firePoint.rotation) as Transform;
+        trail = PhotonNetwork.Instantiate(BulletTrailPrefab.name, firePoint.position, firePoint.rotation, 0) as GameObject;
         LineRenderer lr = trail.GetComponent<LineRenderer>();
 
         if (lr != null)
@@ -133,7 +148,7 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
             lr.SetPosition(1, hitPos);
         }
 
-        Destroy (trail.gameObject, 0.04f);
+        photonView.RPC("DestroyTrail", PhotonTargets.AllBuffered);
 
         if (hitNormal != new Vector3(9999, 9999, 9999))
         {
@@ -149,17 +164,30 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
         camShake.Shake(camShakeAmt, camShakeLength);
 
         audioManager.PlaySound(weaponShootSound);
-    }
 
+    }
+    
+
+    [PunRPC]
+    public void DestroyTrail()
+    {
+        Destroy (trail.gameObject, .1f);
+    }
+*/
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)
         {
-            stream.SendNext(BulletTrailPrefab.position);
+           // if (trail.transform.position != null)
+           // {
+                //stream.SendNext(trail.transform.position.x);
+                //stream.SendNext(trail.transform.position.y);
+           // }
         }
         else if (stream.isReading)
         {
-            transform.position = (Vector3)stream.ReceiveNext();
+            
+                //trail.transform.position = new Vector3((float)stream.ReceiveNext(), (float)stream.ReceiveNext(), 0);
         }
     }
 }

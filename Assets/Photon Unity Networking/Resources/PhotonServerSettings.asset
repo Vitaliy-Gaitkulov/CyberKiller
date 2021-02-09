@@ -45,4 +45,6 @@ MonoBehaviour:
   - TaggedPlayer
   - Flip
   - CheckInputArm
+  - DestroyTrail
+  - Shoot
   DisableAutoOpenWizard: 1

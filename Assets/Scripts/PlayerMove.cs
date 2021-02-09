@@ -186,15 +186,15 @@ public class PlayerMove : Photon.MonoBehaviour, IPunObservable
     {
 		if (stream.isWriting)
         {
-			stream.SendNext(transform.position);
-			stream.SendNext(transform.rotation);
+			//stream.SendNext(transform.position);
+			//stream.SendNext(transform.rotation);
 			stream.SendNext(armRotation.transform.rotation);
 
         }
 		else if(stream.isReading)
         {
-			transform.position = (Vector3)stream.ReceiveNext();
-			transform.rotation = (Quaternion)stream.ReceiveNext();
+			//transform.position = (Vector3)stream.ReceiveNext();
+			//transform.rotation = (Quaternion)stream.ReceiveNext();
 			armRotation.transform.rotation = (Quaternion)stream.ReceiveNext();
         }
     }
