@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7986971961415231463}
   - component: {fileID: 5665062902710429740}
   - component: {fileID: 5900892966391093017}
+  - component: {fileID: 5498217255368420635}
   m_Layer: 0
   m_Name: BulletTrail
   m_TagString: Untagged
@@ -143,7 +144,7 @@ MonoBehaviour:
     SynchronizeEnabled: 1
     TeleportEnabled: 1
     TeleportIfDistanceGreaterThan: 3
-    InterpolateOption: 2
+    InterpolateOption: 0
     InterpolateMoveTowardsSpeed: 1
     InterpolateLerpSpeed: 1
     InterpolateMoveTowardsAcceleration: 2
@@ -249,7 +250,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 8500825677212820368}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 8be6341e1ce3f4cec9902bc34f72d20a, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -266,3 +267,15 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.01, y: 0.01}
   m_EdgeRadius: 0
+--- !u!114 &5498217255368420635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8500825677212820368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c75a3af90db0de343a52d7e37936272b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

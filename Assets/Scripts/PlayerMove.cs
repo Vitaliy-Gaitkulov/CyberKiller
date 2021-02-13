@@ -29,9 +29,6 @@ public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 
 	public PhotonView photonView;
 	public Rigidbody2D rb;
-	//public Animation anim;
-	//public GameObject PlayerCamera;
-	//public SpriteRenderer sr;
 	public Text PlayerNameText;
 
 	public Transform armRotation;
@@ -40,9 +37,15 @@ public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 	private Vector3 difference;
 
 
+	private Quaternion correctArmRot;
+	private Vector3 theScaleArm;
+	Transform armGraphics;
+
+
 	AudioManager audioManager;
 	void Start() 
 	{
+
 		audioManager = AudioManager.instance;
 	}
 
@@ -81,7 +84,7 @@ public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 
 			difference = new Vector3(FireJoystick.Horizontal, FireJoystick.Vertical);
 			difference.Normalize();
-			photonView.RPC("CheckInputArm", PhotonTargets.AllBuffered);
+			CheckInputArm();
 		}
 	}
 
@@ -175,27 +178,46 @@ public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 		playerGraphics.localScale = theScale;
 	}
 
-	[PunRPC]
+
 	void CheckInputArm()
 	{
 		float rotZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
 		armRotation.transform.rotation = Quaternion.Euler(0f, 0f, rotZ + rotationOffset);
+		theScaleArm = armRotation.transform.localScale;
+		if (Mathf.Abs(rotZ) > 90)
+		{
+			if (theScaleArm.y > 0)
+			{
+				theScaleArm.y *= -1;
+				armRotation.transform.localScale = theScaleArm;
+			}
+		}
+		else
+		{
+				theScaleArm.y = Mathf.Abs(theScaleArm.y);
+				armRotation.transform.localScale = theScaleArm;
+			
+		};
+	}
+
+	void Update()
+    {
+		if (!photonView.isMine)
+		{
+			//armRotation.transform.rotation = Quaternion.Lerp(armRotation.transform.rotation, this.correctArmRot, Time.deltaTime * 5);
+		}
 	}
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
 		if (stream.isWriting)
         {
-			//stream.SendNext(transform.position);
-			//stream.SendNext(transform.rotation);
-			stream.SendNext(armRotation.transform.rotation);
+			//stream.SendNext(armRotation.transform.rotation);
 
         }
 		else if(stream.isReading)
         {
-			//transform.position = (Vector3)stream.ReceiveNext();
-			//transform.rotation = (Quaternion)stream.ReceiveNext();
-			armRotation.transform.rotation = (Quaternion)stream.ReceiveNext();
-        }
+			//this.correctArmRot = (Quaternion)stream.ReceiveNext();
+		}
     }
 }

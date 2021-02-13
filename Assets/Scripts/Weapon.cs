@@ -86,13 +86,12 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
 
             if(Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.5 && Time.time > timeToFire){
                 timeToFire = Time.time +1/fireRate;
-                photonView.RPC("Shoot", PhotonTargets.AllBuffered);
+                Shoot();
             }
         }
 
     }
     
-    [PunRPC]
     void Shoot(){
         Vector2 mousePosition = new Vector2 (firePoint.position.x, firePoint.position.y);
 
@@ -132,8 +131,13 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
 
             GameObject trail = PhotonNetwork.Instantiate("BulletTrail", mousePosition, firePoint.rotation, 0) as GameObject;
             trail.GetComponent<Rigidbody2D>().AddForce((aimPointPosition - mousePosition) * 100f);
+            audioManager.PlaySound(weaponShootSound);
+            Transform clone = Instantiate(MuzzleFlashPrefab, firePoint.position, firePoint.rotation) as Transform;
+            float size = Random.Range(0.6f, 0.9f);
+            clone.localScale = new Vector3(size, size, size);
+            Destroy(clone.gameObject, 0.02f);
 
-            //photonView.RPC("DestroyTrail", PhotonTargets.AllBuffered);
+            //DestroyTrail(trail);
         }
     }
 
@@ -168,8 +172,7 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
     }
     
 
-    [PunRPC]
-    public void DestroyTrail()
+    public void DestroyTrail(GameObject trail)
     {
         Destroy (trail.gameObject, .1f);
     }
