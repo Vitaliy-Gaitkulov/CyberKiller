@@ -15,7 +15,6 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
     public Transform Arm;
 
     //public GameObject BulletTrailPrefab;
-    public Transform HitPrefab;
     public Transform MuzzleFlashPrefab;
     float timeToSpawnEffect = 0;
     public float effectSpawnRate = 10;
@@ -93,11 +92,11 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
     }
     
     void Shoot(){
-        Vector2 mousePosition = new Vector2 (firePoint.position.x, firePoint.position.y);
+        Vector2 firePointPosition = new Vector2 (firePoint.position.x, firePoint.position.y);
 
         Vector2 aimPointPosition = new Vector2 (aim.position.x, aim.position.y);
         Vector2 helperPointPosition = new Vector2 (firePointHelper.position.x, firePointHelper.position.y);
-        RaycastHit2D hit = Physics2D.Raycast (helperPointPosition, aimPointPosition-mousePosition, 100, whatToHit);
+        RaycastHit2D hit = Physics2D.Raycast (helperPointPosition, aimPointPosition- firePointPosition, 100, whatToHit);
 
         if (Time.time >= timeToSpawnEffect)
         {
@@ -129,8 +128,8 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
 
 
 
-            GameObject trail = PhotonNetwork.Instantiate("BulletTrail", mousePosition, firePoint.rotation, 0) as GameObject;
-            trail.GetComponent<Rigidbody2D>().AddForce((aimPointPosition - mousePosition) * 100f);
+            GameObject trail = PhotonNetwork.Instantiate("BulletTrail", firePointPosition, firePoint.rotation, 0) as GameObject;
+            trail.GetComponent<Rigidbody2D>().AddForce((aimPointPosition - firePointPosition) * 100f);
             audioManager.PlaySound(weaponShootSound);
             Transform clone = Instantiate(MuzzleFlashPrefab, firePoint.position, firePoint.rotation) as Transform;
             float size = Random.Range(0.6f, 0.9f);

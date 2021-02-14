@@ -47,4 +47,6 @@ MonoBehaviour:
   - CheckInputArm
   - DestroyTrail
   - Shoot
+  - DamagePlayer
+  - RegenHealth
   DisableAutoOpenWizard: 1

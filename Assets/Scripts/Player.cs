@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : Photon.MonoBehaviour
 {
     public int fallBoundary = -20;
 
@@ -18,40 +18,52 @@ public class Player : MonoBehaviour
 
 	void Start()
 	{
-        stats = PlayerStats.instance;
-
-        stats.curHealth = stats.maxHealth;
-
-		if (statusIndicator == null)
-		{
-			Debug.LogError("No status indicator referenced on Player");
-		}
-		else
-		{
-			statusIndicator.SetHealth(stats.curHealth, stats.maxHealth);
-		}
-
-        GameMaster.gm.onToggleUpgradeMenu += OnUpgradeMenuToggle;
-
-        audioManager = AudioManager.instance;
-        if(audioManager == null)
+        if (photonView.isMine)
         {
-            Debug.LogError("no audimanager found");
+            stats = PlayerStats.instance;
+
+            stats.curHealth = stats.maxHealth;
+
+		    if (statusIndicator == null)
+		    {
+			    Debug.LogError("No status indicator referenced on Player");
+		    }
+		    else
+		    {
+			    statusIndicator.SetHealth(stats.curHealth, stats.maxHealth);
+		    }
+
+            GameMaster.gm.onToggleUpgradeMenu += OnUpgradeMenuToggle;
+
+            audioManager = AudioManager.instance;
+            if(audioManager == null)
+            {
+                Debug.LogError("no audimanager found");
+            }
+
+            InvokeRepeating("RegenHealth", 1f/stats.healthRegenRate, 1f/stats.healthRegenRate);
         }
 
-        InvokeRepeating("RegenHealth", 1f/stats.healthRegenRate, 1f/stats.healthRegenRate);
 	}
+
+    void RegenHealthHelper()
+    {
+        //photonView.RPC("RegenHealth", PhotonTargets.AllBuffered);
+
+    }
 
     void RegenHealth()
     {
         stats.curHealth += 1;
         statusIndicator.SetHealth(stats.curHealth, stats.maxHealth);
-
     }
 
     void Update (){
-        if (transform.position.y <= fallBoundary){
-            DamagePlayer (999999);
+        if(photonView.isMine)
+        {
+            if (transform.position.y <= fallBoundary){
+                DamagePlayer (999999);
+            }
         }
     }
 
@@ -72,8 +84,9 @@ public class Player : MonoBehaviour
         GameMaster.gm.onToggleUpgradeMenu -= OnUpgradeMenuToggle;
     }
 
+    [PunRPC]
     public void DamagePlayer (int damage){
-        stats.curHealth -=damage;
+        stats.curHealth -= damage;
         if (stats.curHealth <= 0){
             audioManager.PlaySound(deathSoundName);
             GameMaster.KillPlayer(this);

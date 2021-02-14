@@ -7,10 +7,11 @@ public class PlayerControls : Photon.MonoBehaviour
 
     private Vector3 correctPlayerPos;
     private Quaternion correctPlayerRot;
+    public PhotonView photonView2;
 
     void Start()
     {
-        if (photonView.isMine)
+        if (photonView2.isMine)
         {
             GetComponent<PlayerMove>().enabled = true;
         }
@@ -18,7 +19,7 @@ public class PlayerControls : Photon.MonoBehaviour
 
     void Update()
     {
-        if (!photonView.isMine)
+        if (!photonView2.isMine)
         {
             transform.position = Vector3.Lerp(transform.position, this.correctPlayerPos, Time.deltaTime * 5);
             transform.rotation = Quaternion.Lerp(transform.rotation, this.correctPlayerRot, Time.deltaTime * 5);
