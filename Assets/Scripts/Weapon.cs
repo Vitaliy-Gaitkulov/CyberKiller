@@ -14,8 +14,6 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
 
     public Transform Arm;
 
-    //public GameObject BulletTrailPrefab;
-    public Transform HitPrefab;
     public Transform MuzzleFlashPrefab;
     float timeToSpawnEffect = 0;
     public float effectSpawnRate = 10;
@@ -28,15 +26,13 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
 
     float timeToFire = 0;
     public Transform firePoint;
-    public Transform firePointHelper;
     public Transform aim;
-
+    public Transform shield;
 
     private Joystick fire;
 
     AudioManager audioManager;
 
-    //public PhotonView photonView;
 
 
     void Awake()
@@ -72,65 +68,46 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
             }
         }
 
-    }
-
-    void FixedUpdate()
-    {
         if (photonView.isMine)
         {
-            if (Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.2){
+            if (Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.7){
                 aim.gameObject.SetActive(true);
             }else{
                 aim.gameObject.SetActive(false);
             }
 
-            if(Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.5 && Time.time > timeToFire){
+            if (Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.2 && Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) < 0.7 )
+            {
+                shield.gameObject.SetActive(true);
+            }
+            else
+            {
+                shield.gameObject.SetActive(false);
+            }
+
+            if (Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.8 && Time.time > timeToFire){
                 timeToFire = Time.time +1/fireRate;
                 Shoot();
             }
         }
 
     }
+
+    void FixedUpdate()
+    {
+
+    }
     
     void Shoot(){
-        Vector2 mousePosition = new Vector2 (firePoint.position.x, firePoint.position.y);
-
+        Vector2 FirePointPosition = new Vector2 (firePoint.position.x, firePoint.position.y);
         Vector2 aimPointPosition = new Vector2 (aim.position.x, aim.position.y);
-        Vector2 helperPointPosition = new Vector2 (firePointHelper.position.x, firePointHelper.position.y);
-        RaycastHit2D hit = Physics2D.Raycast (helperPointPosition, aimPointPosition-mousePosition, 100, whatToHit);
 
         if (Time.time >= timeToSpawnEffect)
         {
-            Vector3 hitPos;
-            Vector3 hitNormal;
-           /*
-            if (hit.collider != null) {
-                Enemy enemy = hit.collider.GetComponent<Enemy>();
-                if (enemy != null){
-                    enemy.DamageEnemy (Damage);
-                }
-            }
-
-            if(hit.collider == null)
-            {
-                hitPos = (aimPointPosition - mousePosition) * 100;
-                hitNormal = new Vector3(9999, 9999, 9999);
-            }else
-            {
-                hitPos = hit.point;
-                hitNormal = hit.normal;
-            }
-
-            */
-
-            //Effect(hitPos, hitNormal);
             timeToSpawnEffect = Time.time + 1/effectSpawnRate;
 
-
-
-
-            GameObject trail = PhotonNetwork.Instantiate("BulletTrail", mousePosition, firePoint.rotation, 0) as GameObject;
-            trail.GetComponent<Rigidbody2D>().AddForce((aimPointPosition - mousePosition) * 100f);
+            GameObject trail = PhotonNetwork.Instantiate("BulletTrail", FirePointPosition, firePoint.rotation, 0) as GameObject;
+            trail.GetComponent<Rigidbody2D>().AddForce((aimPointPosition - FirePointPosition) * 100f);
             audioManager.PlaySound(weaponShootSound);
             Transform clone = Instantiate(MuzzleFlashPrefab, firePoint.position, firePoint.rotation) as Transform;
             float size = Random.Range(0.6f, 0.9f);
