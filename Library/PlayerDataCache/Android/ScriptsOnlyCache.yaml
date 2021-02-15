@@ -1,9 +1,7 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp-Editor.dll:
-    - PhotonRigidbody2DViewEditor
-    - PhotonTransformViewEditor
-    - PhotonViewInspector
+    - PunSceneSettings
     Assembly-CSharp.dll:
     - AudioManager
     - AudioRpc
@@ -81,8 +79,10 @@ ScriptsOnlyBuild:
     UnityEditor.Graphs.dll:
     - UnityEditor.Graphs.AnimationBlendTree.Graph
     - UnityEditor.Graphs.AnimationBlendTree.GraphGUI
+    - UnityEditor.Graphs.AnimationStateMachine.AnyStateNode
     - UnityEditor.Graphs.AnimationStateMachine.Graph
     - UnityEditor.Graphs.AnimationStateMachine.GraphGUI
+    - UnityEditor.Graphs.AnimationStateMachine.StateNode
     - UnityEditor.Graphs.AnimatorControllerTool
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
@@ -1043,7 +1043,7 @@ ScriptsOnlyBuild:
     className: WaypointProgressTracker
   - hash:
       serializedVersion: 2
-      Hash: 90918ce2c0af30983f4d81713371987c
+      Hash: 42a63189aa449546681f700699b3fd12
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Weapon
@@ -1607,7 +1607,7 @@ ScriptsOnlyBuild:
     className: SpriteSkin
   - hash:
       serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+      Hash: 926facf16aed674c791a2fa004dc7389
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: DestroyBullet

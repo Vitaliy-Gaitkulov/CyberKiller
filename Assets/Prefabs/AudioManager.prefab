@@ -59,7 +59,7 @@ MonoBehaviour:
     randomPitch: 0.1
     loop: 1
   - name: DefaultShot
-    clip: {fileID: 8300000, guid: 0d7df423b494e0946a6441dbcfc2c582, type: 3}
+    clip: {fileID: 8300000, guid: 43533c9b3cab4e140b357d9a6aa9b905, type: 3}
     volume: 0.726
     pitch: 1
     randomVolume: 0.204

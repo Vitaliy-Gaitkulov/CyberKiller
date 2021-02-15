@@ -35,11 +35,14 @@ public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 	private int rotationOffset = 0;
 	private Joystick FireJoystick;
 	private Vector3 difference;
+	private Vector3 vectorNull = new Vector3(0, 0, 0);
 
 
 	private Quaternion correctArmRot;
 	private Vector3 theScaleArm;
 	Transform armGraphics;
+
+	public static bool flipArm = true;
 
 
 	AudioManager audioManager;
@@ -172,10 +175,33 @@ public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 	[PunRPC]
 	private void Flip()
 	{
+		flipArm = !flipArm;
 		m_FacingRight = !m_FacingRight;
 		Vector3 theScale = playerGraphics.localScale;
 		theScale.x *= -1;
 		playerGraphics.localScale = theScale;
+		flipArmX(flipArm);
+
+	}
+
+	[PunRPC]
+	void flipArmX(bool f)
+    {
+		if (f == false && difference == vectorNull)
+		{
+			theScaleArm.x *= -1;
+			armRotation.transform.localScale = theScaleArm;
+		}
+		else if (f == true && difference == vectorNull)
+		{
+			theScaleArm.x = Mathf.Abs(theScaleArm.x);
+			armRotation.transform.localScale = theScaleArm;
+		}
+		else if (f == true && difference != vectorNull)
+		{
+			theScaleArm.x = Mathf.Abs(theScaleArm.x);
+			armRotation.transform.localScale = theScaleArm;
+		}
 	}
 
 
@@ -196,8 +222,15 @@ public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 		{
 				theScaleArm.y = Mathf.Abs(theScaleArm.y);
 				armRotation.transform.localScale = theScaleArm;
-			
 		};
+
+		if (Mathf.Abs(rotZ) != 0)
+		{
+			photonView.RPC("flipArmX", PhotonTargets.AllBuffered, true);
+		}
+
+
+		
 	}
 
 	void Update()

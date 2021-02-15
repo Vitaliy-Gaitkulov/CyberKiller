@@ -72,6 +72,7 @@ public class Player : MonoBehaviour
         GameMaster.gm.onToggleUpgradeMenu -= OnUpgradeMenuToggle;
     }
 
+    [PunRPC]
     public void DamagePlayer (int damage){
         stats.curHealth -=damage;
         if (stats.curHealth <= 0){

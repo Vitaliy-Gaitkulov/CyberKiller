@@ -47,4 +47,9 @@ MonoBehaviour:
   - CheckInputArm
   - DestroyTrail
   - Shoot
+  - DamagePlayer
+  - Shield
+  - flipArmX
+  - hitEffect
+  - ShootEffect
   DisableAutoOpenWizard: 1

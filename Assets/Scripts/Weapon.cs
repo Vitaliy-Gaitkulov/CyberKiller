@@ -76,13 +76,13 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
                 aim.gameObject.SetActive(false);
             }
 
-            if (Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.2 && Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) < 0.7 )
+            if (Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.2 && Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) < 0.7)
             {
-                shield.gameObject.SetActive(true);
+                photonView.RPC("Shield", PhotonTargets.AllBuffered, true);
             }
             else
             {
-                shield.gameObject.SetActive(false);
+                photonView.RPC("Shield", PhotonTargets.AllBuffered, false);
             }
 
             if (Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.8 && Time.time > timeToFire){
@@ -93,9 +93,10 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
 
     }
 
-    void FixedUpdate()
-    {
-
+    [PunRPC]
+    void Shield(bool sh)
+    { 
+        shield.gameObject.SetActive(sh);
     }
     
     void Shoot(){
@@ -107,53 +108,22 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
             timeToSpawnEffect = Time.time + 1/effectSpawnRate;
 
             GameObject trail = PhotonNetwork.Instantiate("BulletTrail", FirePointPosition, firePoint.rotation, 0) as GameObject;
-            trail.GetComponent<Rigidbody2D>().AddForce((aimPointPosition - FirePointPosition) * 100f);
-            audioManager.PlaySound(weaponShootSound);
-            Transform clone = Instantiate(MuzzleFlashPrefab, firePoint.position, firePoint.rotation) as Transform;
-            float size = Random.Range(0.6f, 0.9f);
-            clone.localScale = new Vector3(size, size, size);
-            Destroy(clone.gameObject, 0.02f);
+            trail.GetComponent<Rigidbody2D>().AddForce((aimPointPosition - FirePointPosition) * 50f);
 
-            //DestroyTrail(trail);
+            photonView.RPC("ShootEffect", PhotonTargets.AllBuffered);
         }
     }
 
-    /*
-    void Effect (Vector3 hitPos, Vector3 hitNormal){
-        trail = PhotonNetwork.Instantiate(BulletTrailPrefab.name, firePoint.position, firePoint.rotation, 0) as GameObject;
-        LineRenderer lr = trail.GetComponent<LineRenderer>();
-
-        if (lr != null)
-        {
-            lr.SetPosition(0, firePoint.position);
-            lr.SetPosition(1, hitPos);
-        }
-
-        photonView.RPC("DestroyTrail", PhotonTargets.AllBuffered);
-
-        if (hitNormal != new Vector3(9999, 9999, 9999))
-        {
-            Transform hitParticle = Instantiate(HitPrefab, hitPos, Quaternion.FromToRotation (Vector3.right, hitNormal)) as Transform;
-            Destroy(hitParticle.gameObject, 1f);
-        }
-
-        Transform clone = Instantiate (MuzzleFlashPrefab, firePoint.position, firePoint.rotation) as Transform;
-        float size = Random.Range (0.6f, 0.9f);
-        clone.localScale = new Vector3 (size, size, size);
-        Destroy (clone.gameObject, 0.02f);
-
-        camShake.Shake(camShakeAmt, camShakeLength);
-
-        audioManager.PlaySound(weaponShootSound);
-
-    }
-    
-
-    public void DestroyTrail(GameObject trail)
+    [PunRPC]
+    void ShootEffect()
     {
-        Destroy (trail.gameObject, .1f);
+        audioManager.PlaySound(weaponShootSound);
+        Transform clone = Instantiate(MuzzleFlashPrefab, firePoint.position, firePoint.rotation) as Transform;
+        float size = Random.Range(0.6f, 0.9f);
+        clone.localScale = new Vector3(size, size, size);
+        Destroy(clone.gameObject, 0.02f);
     }
-*/
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)

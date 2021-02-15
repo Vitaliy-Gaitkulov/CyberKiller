@@ -30,8 +30,15 @@ public class DestroyBullet : Photon.MonoBehaviour
                 target.RPC("DamagePlayer", PhotonTargets.AllBuffered, BulletDamage);
             }
 
-
         }
+
+        photonView.RPC("hitEffect", PhotonTargets.AllBuffered);
+
+    }
+
+    [PunRPC]
+    void hitEffect()
+    {
         Transform hitParticle = Instantiate(HitPrefab, transform.position, Quaternion.FromToRotation(Vector3.right, Vector3.left)) as Transform;
         Destroy(hitParticle.gameObject, 1f);
         Destroy(this.gameObject, 0f);
