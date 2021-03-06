@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -82,7 +82,7 @@ public class Enemy : MonoBehaviour
         Player _player = _colInfo.collider.GetComponent<Player>();
         if (_player != null)
         {
-            _player.DamagePlayer(stats.damage);
+            //_player.DamagePlayer(stats.damage);
             DamageEnemy(99999);
         }
     }
@@ -92,3 +92,4 @@ public class Enemy : MonoBehaviour
         GameMaster.gm.onToggleUpgradeMenu -= OnUpgradeMenuToggle;
     }
 }
+*/

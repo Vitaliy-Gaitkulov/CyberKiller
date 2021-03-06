@@ -79,10 +79,8 @@ ScriptsOnlyBuild:
     UnityEditor.Graphs.dll:
     - UnityEditor.Graphs.AnimationBlendTree.Graph
     - UnityEditor.Graphs.AnimationBlendTree.GraphGUI
-    - UnityEditor.Graphs.AnimationStateMachine.AnyStateNode
     - UnityEditor.Graphs.AnimationStateMachine.Graph
     - UnityEditor.Graphs.AnimationStateMachine.GraphGUI
-    - UnityEditor.Graphs.AnimationStateMachine.StateNode
     - UnityEditor.Graphs.AnimatorControllerTool
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
@@ -475,6 +473,8 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 13790}
     - Class: 114
+      Script: {instanceID: 13976}
+    - Class: 114
       Script: {instanceID: 14006}
     - Class: 114
       Script: {instanceID: 14118}
@@ -857,7 +857,7 @@ ScriptsOnlyBuild:
     className: MaterialPerOwner
   - hash:
       serializedVersion: 2
-      Hash: 4fe36b3fbebf9749e8970b26f9fd8e0f
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Parallaxind
@@ -1505,7 +1505,7 @@ ScriptsOnlyBuild:
     className: PickupItem
   - hash:
       serializedVersion: 2
-      Hash: a97fcaecdbf09584d5feab3247e8a94b
+      Hash: 69b7bc458cc31897be2e00e6bf8d40d6
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Player
@@ -2291,7 +2291,7 @@ ScriptsOnlyBuild:
     className: ToggleGroup
   - hash:
       serializedVersion: 2
-      Hash: 8d8dca4a7057f226d1c1f770e6e9b0f3
+      Hash: f1fd51489c0857c54d961253f5373ade
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: PlayerMove

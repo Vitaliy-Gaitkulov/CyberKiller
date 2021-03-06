@@ -5,7 +5,7 @@ using UnityEngine;
 public class DestroyBullet : Photon.MonoBehaviour
 {
     public Transform HitPrefab;
-    public int BulletDamage;
+    public float BulletDamage;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,11 +23,12 @@ public class DestroyBullet : Photon.MonoBehaviour
             return;
 
         PhotonView target = collision.gameObject.GetComponent<PhotonView>();
+
         if (target != null && (!target.isMine || target.isSceneView))
         {
             if (target.tag == "Player")
             {
-                target.RPC("DamagePlayer", PhotonTargets.AllBuffered, BulletDamage);
+                target.RPC("ReduceHealth", PhotonTargets.AllBuffered, BulletDamage);
             }
 
         }

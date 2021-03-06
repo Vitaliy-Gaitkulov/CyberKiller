@@ -52,4 +52,8 @@ MonoBehaviour:
   - flipArmX
   - hitEffect
   - ShootEffect
+  - KillPlayer
+  - ReduceHealth
+  - Dead
+  - Respawn
   DisableAutoOpenWizard: 1

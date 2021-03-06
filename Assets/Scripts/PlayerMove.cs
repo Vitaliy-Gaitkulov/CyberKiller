@@ -6,13 +6,15 @@ using UnityEngine.UI;
 public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 {
 
-	[SerializeField] private float m_JumpForce = 300f;             
-	[Range(0, 1)] [SerializeField] private float m_CrouchSpeed = .36f; 
+	[SerializeField] private float m_JumpForce = 20f;             
+	[Range(0, 1)] [SerializeField] private float m_CrouchSpeed = .300f; 
 	[SerializeField] private bool m_AirControl = false;                
 	[SerializeField] private LayerMask m_WhatIsGround;
 		
 	[SerializeField]
 	string landingSoundName = "LandingFootsteps";
+
+	public GameObject PlayerCamera;
 
 	private Transform m_GroundCheck;    
 	const float k_GroundedRadius = .2f; 
@@ -42,7 +44,11 @@ public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 	private Vector3 theScaleArm;
 	Transform armGraphics;
 
-	public static bool flipArm = true;
+	public bool flipArm = true;
+	public bool flipBody = true;
+	public bool fireFlip = false;
+
+	public bool DisableInput = false;
 
 
 	AudioManager audioManager;
@@ -56,9 +62,10 @@ public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 	{
     if (photonView.isMine)
     {
-		//PlayerCamera.SetActive(true);
+		PlayerCamera.SetActive(true);
 		PlayerNameText.text = PhotonNetwork.playerName;
 		FireJoystick = GameObject.FindWithTag("FireJoystick").GetComponent<FixedJoystick>();
+		flipArm = flipBody;
 	}
 	else
     {
@@ -81,13 +88,14 @@ public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 
 	private void FixedUpdate()
 	{
-		if(photonView.isMine)
+		if(photonView.isMine && !DisableInput)
 		{
 			CheckInput();
 
 			difference = new Vector3(FireJoystick.Horizontal, FireJoystick.Vertical);
 			difference.Normalize();
 			CheckInputArm();
+			checkFace();
 		}
 	}
 
@@ -171,37 +179,39 @@ public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 		}
 	}
 
+	void checkFace()
+    {
+		if(flipArm != flipBody && fireFlip == false)
+        {
+			flipArmX();
+		}
+    }
+
 
 	[PunRPC]
 	private void Flip()
 	{
-		flipArm = !flipArm;
+		flipBody = !flipBody;
 		m_FacingRight = !m_FacingRight;
 		Vector3 theScale = playerGraphics.localScale;
 		theScale.x *= -1;
 		playerGraphics.localScale = theScale;
-		flipArmX(flipArm);
 
 	}
 
-	[PunRPC]
-	void flipArmX(bool f)
-    {
-		if (f == false && difference == vectorNull)
-		{
+	void flipArmX()
+    {	
+		if (flipBody == false)
+        {
+			flipArm = false;
 			theScaleArm.x *= -1;
-			armRotation.transform.localScale = theScaleArm;
-		}
-		else if (f == true && difference == vectorNull)
-		{
+        }
+        else
+        {
+			flipArm = true;
 			theScaleArm.x = Mathf.Abs(theScaleArm.x);
-			armRotation.transform.localScale = theScaleArm;
-		}
-		else if (f == true && difference != vectorNull)
-		{
-			theScaleArm.x = Mathf.Abs(theScaleArm.x);
-			armRotation.transform.localScale = theScaleArm;
-		}
+        }
+		armRotation.transform.localScale = theScaleArm;
 	}
 
 
@@ -220,18 +230,23 @@ public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 		}
 		else
 		{
-				theScaleArm.y = Mathf.Abs(theScaleArm.y);
-				armRotation.transform.localScale = theScaleArm;
-		};
+			theScaleArm.y = Mathf.Abs(theScaleArm.y);
+            armRotation.transform.localScale = theScaleArm;
+        };
 
-		if (Mathf.Abs(rotZ) != 0)
-		{
-			photonView.RPC("flipArmX", PhotonTargets.AllBuffered, true);
-		}
-
-
-		
-	}
+        //когда прицел активен
+        if (Mathf.Abs(rotZ) != 0)
+        {
+			fireFlip = true;
+			flipArm = true;
+			theScaleArm.x = Mathf.Abs(theScaleArm.x);
+			armRotation.transform.localScale = theScaleArm;
+        }
+        else
+        {
+			fireFlip = false;
+        }
+    }
 
 	void Update()
     {
