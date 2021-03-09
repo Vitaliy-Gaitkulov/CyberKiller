@@ -6,15 +6,13 @@ using UnityEngine.UI;
 public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 {
 
-	[SerializeField] private float m_JumpForce = 20f;             
+	[SerializeField] private float m_JumpForce = 10f;             
 	[Range(0, 1)] [SerializeField] private float m_CrouchSpeed = .300f; 
 	[SerializeField] private bool m_AirControl = false;                
 	[SerializeField] private LayerMask m_WhatIsGround;
 		
 	[SerializeField]
 	string landingSoundName = "LandingFootsteps";
-
-	public GameObject PlayerCamera;
 
 	private Transform m_GroundCheck;    
 	const float k_GroundedRadius = .2f; 
@@ -36,8 +34,7 @@ public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 	public Transform armRotation;
 	private int rotationOffset = 0;
 	private Joystick FireJoystick;
-	private Vector3 difference;
-	private Vector3 vectorNull = new Vector3(0, 0, 0);
+	public Joystick AbilityJoystick;
 
 
 	private Quaternion correctArmRot;
@@ -50,64 +47,106 @@ public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 
 	public bool DisableInput = false;
 
+	private Vector3 difference;
+
 
 	AudioManager audioManager;
 	void Start() 
 	{
-
 		audioManager = AudioManager.instance;
 	}
 
 	private void Awake()
 	{
-    if (photonView.isMine)
-    {
-		PlayerCamera.SetActive(true);
-		PlayerNameText.text = PhotonNetwork.playerName;
-		FireJoystick = GameObject.FindWithTag("FireJoystick").GetComponent<FixedJoystick>();
-		flipArm = flipBody;
-	}
-	else
-    {
-		PlayerNameText.text = photonView.owner.name;
-		PlayerNameText.color = Color.cyan;
-    }
+		if (photonView.isMine)
+		{
+			PlayerNameText.text = PhotonNetwork.playerName;
+			FireJoystick = GameObject.FindWithTag("FireJoystick").GetComponent<FixedJoystick>();
+			AbilityJoystick = GameObject.FindWithTag("AbilityJoystick").GetComponent<FixedJoystick>();
+			flipArm = flipBody;
+		}
+		else
+		{
+			PlayerNameText.text = photonView.owner.name;
+			PlayerNameText.color = Color.cyan;
+		}
 
-    joystick = GameObject.FindWithTag("joystick").GetComponent<FixedJoystick>();
-		// Setting up references.
+		joystick = GameObject.FindWithTag("joystick").GetComponent<FloatingJoystick> ();
 		m_GroundCheck = transform.Find("GroundCheck");
 		m_CeilingCheck = transform.Find("CeilingCheck");
 		m_Anim = GetComponent<Animator>();
 		m_Rigidbody2D = GetComponent<Rigidbody2D>();
 		playerGraphics = transform.Find ("Graphics");
-		if (playerGraphics == null)
-		{
-			Debug.LogError("error 'Graphics'");
-		}
 	}
 
 	private void FixedUpdate()
 	{
-		if(photonView.isMine && !DisableInput)
+		if(photonView.isMine && DisableInput == false)
 		{
 			CheckInput();
+			if(Mathf.Abs(AbilityJoystick.Horizontal) + Mathf.Abs(AbilityJoystick.Vertical) > 0.1)
+            {
+				difference = new Vector3(AbilityJoystick.Horizontal, AbilityJoystick.Vertical);
+				difference.Normalize();
+				CheckInputArm(difference);
+            }
+            else
+            {
+				difference = new Vector3(FireJoystick.Horizontal, FireJoystick.Vertical);
+				difference.Normalize();
+				CheckInputArm(difference);
+				checkFace();
+            }
 
-			difference = new Vector3(FireJoystick.Horizontal, FireJoystick.Vertical);
-			difference.Normalize();
-			CheckInputArm();
-			checkFace();
+		}
+	}
+
+	void CheckInputArm(Vector3 difference)
+	{
+		float rotZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
+		armRotation.transform.rotation = Quaternion.Euler(0f, 0f, rotZ + rotationOffset);
+		theScaleArm = armRotation.transform.localScale;
+		if (Mathf.Abs(rotZ) > 90)
+		{
+			if (theScaleArm.y > 0)
+			{
+				theScaleArm.y *= -1;
+				armRotation.transform.localScale = theScaleArm;
+			}
+		}
+		else
+		{
+			theScaleArm.y = Mathf.Abs(theScaleArm.y);
+			armRotation.transform.localScale = theScaleArm;
+		};
+
+		//когда прицел активен
+		if (Mathf.Abs(rotZ) != 0)
+		{
+			fireFlip = true;
+			flipArm = true;
+			theScaleArm.x = Mathf.Abs(theScaleArm.x);
+			armRotation.transform.localScale = theScaleArm;
+		}
+		else
+		{
+			fireFlip = false;
 		}
 	}
 
 	private void CheckInput()
 	{
-		if(!m_Jump)
-		{
-			if(joystick.Vertical > 0.4)
+        if (joystick != null)
+        {
+			if(!m_Jump)
 			{
-				m_Jump = true;
+				if(joystick.Vertical > 0.4)
+				{
+					m_Jump = true;
+				}
 			}
-		}
+        }
+
 
 		bool crounh = Input.GetKey(KeyCode.LeftControl);
 		float h = joystick.Horizontal;
@@ -213,40 +252,6 @@ public class PlayerMove : Photon.MonoBehaviour, IPunObservable
         }
 		armRotation.transform.localScale = theScaleArm;
 	}
-
-
-	void CheckInputArm()
-	{
-		float rotZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
-		armRotation.transform.rotation = Quaternion.Euler(0f, 0f, rotZ + rotationOffset);
-		theScaleArm = armRotation.transform.localScale;
-		if (Mathf.Abs(rotZ) > 90)
-		{
-			if (theScaleArm.y > 0)
-			{
-				theScaleArm.y *= -1;
-				armRotation.transform.localScale = theScaleArm;
-			}
-		}
-		else
-		{
-			theScaleArm.y = Mathf.Abs(theScaleArm.y);
-            armRotation.transform.localScale = theScaleArm;
-        };
-
-        //когда прицел активен
-        if (Mathf.Abs(rotZ) != 0)
-        {
-			fireFlip = true;
-			flipArm = true;
-			theScaleArm.x = Mathf.Abs(theScaleArm.x);
-			armRotation.transform.localScale = theScaleArm;
-        }
-        else
-        {
-			fireFlip = false;
-        }
-    }
 
 	void Update()
     {

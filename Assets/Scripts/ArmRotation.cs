@@ -6,6 +6,7 @@ public class ArmRotation : Photon.MonoBehaviour
 {
     public int rotationOffset = 0;
     public Joystick FireJoystick;
+    public Joystick AbilityJoystick;
     public Vector3 difference;
 
     void Awake() 
@@ -13,15 +14,17 @@ public class ArmRotation : Photon.MonoBehaviour
         if (true)
         {
             FireJoystick = GameObject.FindWithTag("FireJoystick").GetComponent<FixedJoystick>();
+            AbilityJoystick = GameObject.FindWithTag("AbilityJoystick").GetComponent<FixedJoystick>();
         }
     }
     void Update()
     {
-        if (true)
-        {
-            CheckInputArm();
-        }
-
+      //  if(AbilityJoystick.Horizontal != 0f || AbilityJoystick.Vertical != 0f)
+       // {
+            Debug.Log(AbilityJoystick.Horizontal);
+            CheckInputAbility();
+       // }
+        CheckInputArm();
     }
 
     void CheckInputArm()
@@ -30,6 +33,15 @@ public class ArmRotation : Photon.MonoBehaviour
         difference.Normalize ();
 
         float rotZ = Mathf.Atan2 (difference.y, difference.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0f, 0f, rotZ + rotationOffset);
+    }
+
+    void CheckInputAbility()
+    {
+        difference = new Vector3(AbilityJoystick.Horizontal, AbilityJoystick.Vertical);
+        difference.Normalize();
+
+        float rotZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f, 0f, rotZ + rotationOffset);
     }
 }

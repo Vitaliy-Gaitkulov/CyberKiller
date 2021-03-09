@@ -31,6 +31,7 @@ public class Health : Photon.MonoBehaviour
         ModifyHealth(amount);
     }
 
+    [PunRPC]
     private void CheckHealth()
     {
         FillImage.fillAmount = HealthAmount / 100f;
@@ -69,6 +70,7 @@ public class Health : Photon.MonoBehaviour
         PlayerCanvas.SetActive(true);
         FillImage.fillAmount = 1f;
         HealthAmount = 100f;
+        EnableInput();
 
     }
 

@@ -8,43 +8,19 @@ public class Player : Photon.MonoBehaviour
     public string deathSoundName = "DeathVoice";
     public string damageSoundName = "Grunt";
     private AudioManager audioManager;
-    [SerializeField]
-    private StatusIndicator statusIndicator;
-    private PlayerStats stats;
-
+    public GameObject PlayerCamera;
 
     public float HealtAmount;
 
-
-	void Start()
-	{
+    void Awake()
+    {
         if (photonView.isMine)
         {
-/*            stats = PlayerStats.instance;
-
-            stats.curHealth = stats.maxHealth;
-
-		    if (statusIndicator == null)
-		    {
-			    Debug.LogError("No status indicator referenced on Player");
-		    }
-		    else
-		    {
-			    statusIndicator.SetHealth(stats.curHealth, stats.maxHealth);
-		    }*/
-
-            //GameMaster.gm.onToggleUpgradeMenu += OnUpgradeMenuToggle;
-
+            PlayerCamera.SetActive(true);
             audioManager = AudioManager.instance;
-            if(audioManager == null)
-            {
-                Debug.LogError("no audimanager found");
-            }
 
-            //InvokeRepeating("RegenHealth", 1f/stats.healthRegenRate, 1f/stats.healthRegenRate);
         }
-
-	}
+    }
 
   /*  void RegenHealth()
     {

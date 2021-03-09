@@ -32,8 +32,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8500825677212820368}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.1589, y: 0.0463, z: 0}
-  m_LocalScale: {x: 67.26747, y: 2.6384375, z: 0.22171745}
+  m_LocalPosition: {x: -0.1589, y: 0.0713, z: 0}
+  m_LocalScale: {x: 67.26747, y: 7.636601, z: 0.22171745}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -78,7 +78,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 4a5f7ea228042b040a738f45d08c2cfc, type: 3}
-  m_Color: {r: 0.7830189, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.1745283, g: 1, b: 0.97524554, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -281,4 +281,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HitPrefab: {fileID: 5712694104070325536, guid: 34e8ba42068c45345b121ad82388e05c,
     type: 3}
-  BulletDamage: 0.3
+  BulletDamage: 10

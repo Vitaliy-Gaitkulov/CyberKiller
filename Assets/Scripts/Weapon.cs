@@ -8,7 +8,7 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
 
     public Transform pistolGun;
 
-    public float fireRate = 0;
+    public float fireRate = 5;
     public int Damage = 10;
     public LayerMask whatToHit;
 
@@ -16,7 +16,7 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
 
     public Transform MuzzleFlashPrefab;
     float timeToSpawnEffect = 0;
-    public float effectSpawnRate = 10;
+    public float effectSpawnRate = 5;
 
     public float camShakeAmt = 0.05f;
     public float camShakeLength = 0.1f;
@@ -30,6 +30,7 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
     public Transform shield;
 
     private Joystick fire;
+    private Joystick ability;
 
     AudioManager audioManager;
 
@@ -43,6 +44,7 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
         }
         Arm = GameObject.FindWithTag("Arm").GetComponent<Transform>();
         fire = GameObject.FindWithTag("FireJoystick").GetComponent<FixedJoystick>();
+        ability = GameObject.FindWithTag("AbilityJoystick").GetComponent<FixedJoystick>();
     }
 
     void Start(){
@@ -70,13 +72,13 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
 
         if (photonView.isMine)
         {
-            if (Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.7){
+            if (Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.3){
                 aim.gameObject.SetActive(true);
             }else{
                 aim.gameObject.SetActive(false);
             }
 
-            if (Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.2 && Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) < 0.7)
+            if (Mathf.Abs(ability.Horizontal) + Mathf.Abs(ability.Vertical) > 0.1)
             {
                 photonView.RPC("Shield", PhotonTargets.AllBuffered, true);
             }
@@ -85,7 +87,7 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
                 photonView.RPC("Shield", PhotonTargets.AllBuffered, false);
             }
 
-            if (Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.8 && Time.time > timeToFire){
+            if (Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.6 && Time.time > timeToFire){
                 timeToFire = Time.time +1/fireRate;
                 Shoot();
             }
@@ -108,7 +110,7 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
             timeToSpawnEffect = Time.time + 1/effectSpawnRate;
 
             GameObject trail = PhotonNetwork.Instantiate("BulletTrail", FirePointPosition, firePoint.rotation, 0) as GameObject;
-            trail.GetComponent<Rigidbody2D>().AddForce((aimPointPosition - FirePointPosition) * 50f);
+            trail.GetComponent<Rigidbody2D>().AddForce((aimPointPosition - FirePointPosition) * 80f);
 
             photonView.RPC("ShootEffect", PhotonTargets.AllBuffered);
         }

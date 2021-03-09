@@ -141,6 +141,10 @@ public class GameMaster : MonoBehaviour
     }
     private void OnPhotonPlayerDisconnected(PhotonPlayer player)
     {
+/*        if (photonView.isMine)
+        {
+            SceneCamera.SetActive(true);
+        }*/
         GameObject obj = Instantiate(PlayerFeed, new Vector2(0, 0), Quaternion.identity);
         obj.transform.SetParent(FeedGrid.transform, false);
         obj.GetComponent<Text>().text = player.name + "left the game";
@@ -150,7 +154,7 @@ public class GameMaster : MonoBehaviour
 
     public Transform enemyDeathParticles;
 
-    public void ToggleUpgradeMenu()
+/*    public void ToggleUpgradeMenu()
     {
         upgradeMenu.SetActive(!upgradeMenu.activeSelf);
         waveSpawner.enabled = !upgradeMenu.activeSelf;
@@ -163,7 +167,7 @@ public class GameMaster : MonoBehaviour
 
         Debug.Log("Game Over");
         gameOverUI.SetActive(true);
-    }
+    }*/
 
     public void SpawnPlayer()
     {

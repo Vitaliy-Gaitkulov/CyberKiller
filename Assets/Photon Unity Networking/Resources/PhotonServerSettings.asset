@@ -56,4 +56,5 @@ MonoBehaviour:
   - ReduceHealth
   - Dead
   - Respawn
+  - CheckHealth
   DisableAutoOpenWizard: 1
