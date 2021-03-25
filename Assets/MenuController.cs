@@ -83,6 +83,7 @@ public class MenuController : MonoBehaviour
         
         if (UsernameInput.text.Length >= 3)
         {
+            Debug.Log("JoinOrCreateRoom");
             SetUserName();
             RoomOptions roomOptions = new RoomOptions();
             roomOptions.maxPlayers = 5;
@@ -93,6 +94,11 @@ public class MenuController : MonoBehaviour
     private void OnJoinedRoom()
     {
         PhotonNetwork.LoadLevel("MainGame");
+    }
+
+    private void OnDisconnectedFromPhoton()
+    {
+        PhotonNetwork.LoadLevel("MainMenu");
     }
 
 

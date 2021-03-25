@@ -17,8 +17,12 @@ public class Health : Photon.MonoBehaviour
     public SpriteRenderer sr;
     public GameObject PlayerCanvas;
 
+    AudioManager audioManager;
+
     private void Awake()
     {
+        audioManager = AudioManager.instance;
+
         if(photonView.isMine)
         {
             GameMaster.Instance.LocalPlayer = this.gameObject;
@@ -28,6 +32,8 @@ public class Health : Photon.MonoBehaviour
     [PunRPC]
     public void ReduceHealth(float amount)
     {
+
+        audioManager.PlaySound("Grunt");
         ModifyHealth(amount);
     }
 
@@ -76,7 +82,8 @@ public class Health : Photon.MonoBehaviour
 
     private void ModifyHealth(float amount)
     {
-        if(photonView.isMine)
+        
+        if (photonView.isMine)
         {
             HealthAmount -= amount;
             FillImage.fillAmount -= amount;

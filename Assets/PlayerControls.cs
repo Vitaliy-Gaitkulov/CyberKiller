@@ -5,8 +5,8 @@ using UnityEngine;
 public class PlayerControls : Photon.MonoBehaviour
 {
 
-    private Vector3 correctPlayerPos;
-    private Quaternion correctPlayerRot;
+    private Vector3 correctPlayerPos = Vector3.zero;
+    private Quaternion correctPlayerRot = Quaternion.identity;
 
     void Start()
     {
