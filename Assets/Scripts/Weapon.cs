@@ -114,6 +114,11 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
 
             photonView.RPC("ShootEffect", PhotonTargets.AllBuffered);
         }
+        if(camShake == null)
+        {
+            Debug.Log("no camShake");
+        }
+        camShake.Shake(1f, 1f);
     }
 
     [PunRPC]

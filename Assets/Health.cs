@@ -32,7 +32,6 @@ public class Health : Photon.MonoBehaviour
     [PunRPC]
     public void ReduceHealth(float amount)
     {
-
         audioManager.PlaySound("Grunt");
         ModifyHealth(amount);
     }
