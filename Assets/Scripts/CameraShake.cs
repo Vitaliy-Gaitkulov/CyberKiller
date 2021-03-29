@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class CameraShake : MonoBehaviour
 {
-    public Camera mainCam;
+    //public Camera mainCam;
 
     float shakeAmount = 0;
 
-    void Awake() {
+/*    void Awake() {
         if(mainCam == null){
+            Debug.Log("no mainCam");
             mainCam = Camera.main;
-        }
-    }
+         }
+    }*/
 
     public void Shake(float amt, float length){
         shakeAmount = amt;
@@ -23,21 +24,21 @@ public class CameraShake : MonoBehaviour
     void DoShake()
     {
         if (shakeAmount > 0){
-            Vector3 camPos = mainCam.transform.position;
+            Vector3 camPos = this.transform.position;
 
             float offsetX = Random.value * shakeAmount * 2 -shakeAmount;
             float offsetY = Random.value * shakeAmount * 2 -shakeAmount;
 
             camPos.x += offsetX;
             camPos.y += offsetY;
-
-            mainCam.transform.position = camPos;
+            Debug.Log(camPos);
+            this.transform.position = camPos;
         }
     }
 
     void StopShake()
     {
         CancelInvoke("DoShake");
-        mainCam.transform.localPosition = Vector3.zero;
+        this.transform.localPosition = Vector3.zero;
     }
 }

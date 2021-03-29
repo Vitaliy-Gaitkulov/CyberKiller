@@ -12,6 +12,7 @@ TagManager:
   - Arm
   - Enemy
   - AbilityJoystick
+  - CameraShake
   layers:
   - Default
   - TransparentFX

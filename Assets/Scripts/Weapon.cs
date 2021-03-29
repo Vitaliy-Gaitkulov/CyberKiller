@@ -34,6 +34,8 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
 
     AudioManager audioManager;
 
+    public GameObject cameraShake;
+
 
 
     void Awake()
@@ -48,8 +50,9 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
     }
 
     void Start(){
-        camShake = GameMaster.gm.GetComponent<CameraShake>();
-        if(camShake == null){
+        camShake = cameraShake.GetComponent<CameraShake>();
+        if (camShake == null)
+        {
             Debug.LogError("No CameraShake script found on GM object.");
         }
 
@@ -118,7 +121,7 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
         {
             Debug.Log("no camShake");
         }
-        camShake.Shake(1f, 1f);
+        camShake.Shake(camShakeAmt, camShakeLength);
     }
 
     [PunRPC]
