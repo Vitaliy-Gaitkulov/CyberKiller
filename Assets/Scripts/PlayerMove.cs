@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 {
 
-	[SerializeField] private float m_JumpForce = 10f;             
+	[SerializeField] private float m_JumpForce = 40f;             
 	[Range(0, 1)] [SerializeField] private float m_CrouchSpeed = .300f; 
 	[SerializeField] private bool m_AirControl = false;                
 	[SerializeField] private LayerMask m_WhatIsGround;
@@ -71,7 +71,7 @@ public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 			PlayerNameText.color = Color.cyan;
 		}
 
-		joystick = GameObject.FindWithTag("joystick").GetComponent<FloatingJoystick> ();
+		//joystick = GameObject.FindWithTag("joystick").GetComponent<FloatingJoystick> ();
 		m_GroundCheck = transform.Find("GroundCheck");
 		m_CeilingCheck = transform.Find("CeilingCheck");
 		m_Anim = GetComponent<Animator>();
@@ -83,6 +83,8 @@ public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 	{
 		if(photonView.isMine && DisableInput == false)
 		{
+
+
 			CheckInput();
 			if(Mathf.Abs(AbilityJoystick.Horizontal) + Mathf.Abs(AbilityJoystick.Vertical) > 0.1)
             {
@@ -134,9 +136,20 @@ public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 		}
 	}
 
+	public float h;
+
+	public void CheckMoveHorizontal(float horizontalMove)
+    {
+		h = horizontalMove;
+	}
+	public void CheckMoveJump()
+    {
+		m_Jump = true;
+	}
+
 	private void CheckInput()
 	{
-        if (joystick != null)
+ /*       if (joystick != null)
         {
 			if(!m_Jump)
 			{
@@ -145,11 +158,11 @@ public class PlayerMove : Photon.MonoBehaviour, IPunObservable
 					m_Jump = true;
 				}
 			}
-        }
+        }*/
 
 
 		bool crounh = Input.GetKey(KeyCode.LeftControl);
-		float h = joystick.Horizontal;
+		//float h = joystick.Horizontal;
 		Move(h, crounh, m_Jump);
 		m_Jump = false;
 
