@@ -31,7 +31,6 @@ public class CameraShake : MonoBehaviour
 
             camPos.x += offsetX;
             camPos.y += offsetY;
-            Debug.Log(camPos);
             this.transform.position = camPos;
         }
     }

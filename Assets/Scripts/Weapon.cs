@@ -56,11 +56,11 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
             Debug.LogError("No CameraShake script found on GM object.");
         }
 
-        audioManager = AudioManager.instance;
-        if(audioManager == null)
+        if (audioManager == null)
         {
-            Debug.LogError("no audimanager found");
+            audioManager = AudioManager.instance;
         }
+
     }
 
     void Update() {

@@ -1,25 +1,13 @@
 fileFormatVersion: 2
-guid: 709d761487df21a428aeb0a6d2d6acb7
+guid: 1f22391e1438e244d82451d4ce32249e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1251044799358371065
-    second: PlayerJohnWalk_0
+      213: -3206315750176616141
+    second: mp5_0
   - first:
-      213: 7130453505445044911
-    second: PlayerJohnWalk_1
-  - first:
-      213: 8491636243889165885
-    second: PlayerJohnWalk_2
-  - first:
-      213: 8602617885611959616
-    second: PlayerJohnWalk_3
-  - first:
-      213: 8325084595268633789
-    second: PlayerJohnWalk_4
-  - first:
-      213: 6660223191550882403
-    second: PlayerJohnWalk_5
+      213: -3608335791182092332
+    second: mp5_1
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -117,13 +105,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PlayerJohnWalk_0
+      name: mp5_0
       rect:
         serializedVersion: 2
-        x: 33
-        y: 131
-        width: 64
-        height: 120
+        x: 12
+        y: 32
+        width: 37
+        height: 17
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,20 +119,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9f40bdfdd9a9c5110800000000000000
-      internalID: 1251044799358371065
+      spriteID: 3319bf020d0e083d0800000000000000
+      internalID: -3206315750176616141
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayerJohnWalk_1
+      name: mp5_1
       rect:
         serializedVersion: 2
-        x: 163
-        y: 131
-        width: 64
-        height: 116
+        x: 11
+        y: 10
+        width: 37
+        height: 17
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -152,92 +140,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fa2ad773fa574f260800000000000000
-      internalID: 7130453505445044911
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PlayerJohnWalk_2
-      rect:
-        serializedVersion: 2
-        x: 293
-        y: 131
-        width: 64
-        height: 120
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d3698d65c2a58d570800000000000000
-      internalID: 8491636243889165885
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PlayerJohnWalk_3
-      rect:
-        serializedVersion: 2
-        x: 33
-        y: 1
-        width: 64
-        height: 120
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 045a25a6363a26770800000000000000
-      internalID: 8602617885611959616
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PlayerJohnWalk_4
-      rect:
-        serializedVersion: 2
-        x: 163
-        y: 1
-        width: 64
-        height: 116
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: db4401ac454a88370800000000000000
-      internalID: 8325084595268633789
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PlayerJohnWalk_5
-      rect:
-        serializedVersion: 2
-        x: 293
-        y: 1
-        width: 64
-        height: 116
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 362753194bddd6c50800000000000000
-      internalID: 6660223191550882403
+      spriteID: 4d7634837bd9cedc0800000000000000
+      internalID: -3608335791182092332
       vertices: []
       indices: 
       edges: []

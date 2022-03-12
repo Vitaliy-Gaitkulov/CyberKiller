@@ -13,6 +13,8 @@ public class PlayerControls : Photon.MonoBehaviour
         if (photonView.isMine)
         {
             GetComponent<PlayerMove>().enabled = true;
+            Camera camera = GameObject.FindWithTag("CameraShake").GetComponent<Camera>();
+            camera.enabled = true;
         }
     }
 

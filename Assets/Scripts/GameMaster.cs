@@ -6,6 +6,52 @@ using UnityEngine.UI;
 public class GameMaster : MonoBehaviour
 {
     public GameObject PlayerPrefab;
+
+    public GameObject skinImage;
+    private int selectedSkin = 0;
+
+    public List<GameObject> skinsObject = new List<GameObject>();
+    public List<Sprite> skinsImage = new List<Sprite>();
+
+    public void NextOption()
+    {
+        selectedSkin = selectedSkin + 1;
+        if(selectedSkin == skinsImage.Count)
+        {
+            selectedSkin = 0;
+        }
+        PlayerPrefab = skinsObject[selectedSkin];
+        skinImage.GetComponent<Image>().sprite = skinsImage[selectedSkin];
+    }
+    
+    public void BackOption()
+    {
+        selectedSkin = selectedSkin - 1;
+        if(selectedSkin < 0)
+        {
+            selectedSkin = skinsImage.Count - 1;
+        }
+        PlayerPrefab = skinsObject[selectedSkin];
+        skinImage.GetComponent<Image>().sprite = skinsImage[selectedSkin];
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public GameObject GameCanvas;
     public GameObject SceneCamera;
 
@@ -45,7 +91,6 @@ public class GameMaster : MonoBehaviour
     [SerializeField]
     private GameObject upgradeMenu;
     [SerializeField]
-    private WaveSpawner waveSpawner;
     public delegate void UpgradeMenuCallback(bool active);
     public UpgradeMenuCallback onToggleUpgradeMenu;
     private AudioManager audioManager;
@@ -83,6 +128,7 @@ public class GameMaster : MonoBehaviour
     }
 
     void Start(){
+
         _remainingLives = maxLives;
 
         Money = startingMoney;

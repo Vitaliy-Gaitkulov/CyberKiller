@@ -12,19 +12,10 @@ public class Parallaxind : MonoBehaviour
     private Transform cam;
     private Vector3 previousCamPos;
 
-    void Awake()
-    {
-        
-    }
-    // Start is called before the first frame update
     void Start()
     {
         cam = Camera.main.transform;
-        if(cam == null)
-        {
-            Start();
-            Debug.Log("no camera parralaxing");
-        }
+
         previousCamPos = cam.position;
 
         parallaxScales = new float[backgrounds.Length];
@@ -37,6 +28,9 @@ public class Parallaxind : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        cam = Camera.main.transform;
+        
         for (int i = 0; i < backgrounds.Length; i++)
         {
             float parallax = (previousCamPos.x - cam.position.x) * parallaxScales[i];
@@ -47,4 +41,5 @@ public class Parallaxind : MonoBehaviour
 
         previousCamPos = cam.position;
     }
+        
 }

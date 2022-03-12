@@ -33,7 +33,7 @@ public class Player : Photon.MonoBehaviour
         if(photonView.isMine)
         {
             if (transform.position.y <= fallBoundary){
-                this.GetComponent<PhotonView>().RPC("ReduceHealth", PhotonTargets.AllBuffered, 999999f);
+                //this.GetComponent<PhotonView>().RPC("ReduceHealth", PhotonTargets.AllBuffered, 999999f);
             }
         }
     }

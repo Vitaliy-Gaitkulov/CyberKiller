@@ -4,6 +4,7 @@ ScriptsOnlyBuild:
     - PunSceneSettings
     Assembly-CSharp.dll:
     - AudioManager
+    - Camera2DFollow
     - CameraShake
     - DestroyBullet
     - DestroyFeed
@@ -29,7 +30,6 @@ ScriptsOnlyBuild:
     - ServerSettings
     - StatusIndicator
     - Tiling
-    - UnityStandardAssets._2D.Camera2DFollow
     - UpgradeMenu
     - WaveSpawner
     - WaveUI
@@ -405,8 +405,6 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 15024}
     - Class: 114
-      Script: {instanceID: 15094}
-    - Class: 114
       Script: {instanceID: 15110}
     - Class: 115
       Script: {instanceID: 0}
@@ -673,7 +671,7 @@ ScriptsOnlyBuild:
     className: InputToEvent
   - hash:
       serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+      Hash: 4fe36b3fbebf9749e8970b26f9fd8e0f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Parallaxind
@@ -1489,9 +1487,9 @@ ScriptsOnlyBuild:
     className: FollowTarget
   - hash:
       serializedVersion: 2
-      Hash: 9bf3a2b7413396f7dba63cae75de745a
+      Hash: 827af564643bd4a8e68b9bc97bb31d6b
     assemblyName: Assembly-CSharp.dll
-    namespaceName: UnityStandardAssets._2D
+    namespaceName: 
     className: Camera2DFollow
   - hash:
       serializedVersion: 2
@@ -1615,7 +1613,7 @@ ScriptsOnlyBuild:
     className: FPSCounter
   - hash:
       serializedVersion: 2
-      Hash: 1eea415530b6c28959e786de7167e9e9
+      Hash: 231d1e6c7cc7329d6fb7b8fcd7a222c3
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GameMaster

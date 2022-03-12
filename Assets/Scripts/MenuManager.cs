@@ -21,11 +21,11 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    public void StartGame()
+/*    public void StartGame()
     {
         audioManager.PlaySound(pressButtonSound);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex +1);
-    }
+    }*/
 
     public void QuitGame()
     {
