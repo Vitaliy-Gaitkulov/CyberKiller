@@ -4,13 +4,17 @@ using UnityEngine;
 
 public class DestroyBullet : Photon.MonoBehaviour
 {
-
     public Transform HitPrefab;
-    public int BulletDamage;
+    public float BulletDamage;
     // Start is called before the first frame update
     void Start()
     {
         DestroyTrail();
+    }
+
+    public void DestroyTrail()
+    {
+        Destroy(this.gameObject, 2f);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -19,22 +23,25 @@ public class DestroyBullet : Photon.MonoBehaviour
             return;
 
         PhotonView target = collision.gameObject.GetComponent<PhotonView>();
-        if(target != null && (!target.isMine || target.isSceneView))
+
+        if (target != null && (!target.isMine || target.isSceneView))
         {
-            if(target.tag == "Player")
+            if (target.tag == "Player")
             {
-                target.RPC("DamagePlayer", PhotonTargets.AllBuffered, BulletDamage);
+                target.RPC("ReduceHealthBar", PhotonTargets.AllBuffered, BulletDamage);
             }
 
-
         }
+
+        photonView.RPC("hitEffect", PhotonTargets.AllBuffered);
+
+    }
+
+    [PunRPC]
+    void hitEffect()
+    {
         Transform hitParticle = Instantiate(HitPrefab, transform.position, Quaternion.FromToRotation(Vector3.right, Vector3.left)) as Transform;
         Destroy(hitParticle.gameObject, 1f);
         Destroy(this.gameObject, 0f);
-    }
-
-    public void DestroyTrail()
-    {
-        Destroy(this.gameObject, 2f);
     }
 }

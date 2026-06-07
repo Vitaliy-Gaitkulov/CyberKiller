@@ -5,21 +5,22 @@ using UnityEngine;
 public class PlayerControls : Photon.MonoBehaviour
 {
 
-    private Vector3 correctPlayerPos;
-    private Quaternion correctPlayerRot;
-    public PhotonView photonView2;
+    private Vector3 correctPlayerPos = Vector3.zero;
+    private Quaternion correctPlayerRot = Quaternion.identity;
 
     void Start()
     {
-        if (photonView2.isMine)
+        if (photonView.isMine)
         {
             GetComponent<PlayerMove>().enabled = true;
+            Camera camera = GameObject.FindWithTag("CameraShake").GetComponent<Camera>();
+            camera.enabled = true;
         }
     }
 
     void Update()
     {
-        if (!photonView2.isMine)
+        if (!photonView.isMine)
         {
             transform.position = Vector3.Lerp(transform.position, this.correctPlayerPos, Time.deltaTime * 5);
             transform.rotation = Quaternion.Lerp(transform.rotation, this.correctPlayerRot, Time.deltaTime * 5);

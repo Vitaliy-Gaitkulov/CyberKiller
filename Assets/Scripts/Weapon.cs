@@ -8,16 +8,15 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
 
     public Transform pistolGun;
 
-    public float fireRate = 0;
+    public float fireRate = 5;
     public int Damage = 10;
     public LayerMask whatToHit;
 
     public Transform Arm;
 
-    //public GameObject BulletTrailPrefab;
     public Transform MuzzleFlashPrefab;
     float timeToSpawnEffect = 0;
-    public float effectSpawnRate = 10;
+    public float effectSpawnRate = 5;
 
     public float camShakeAmt = 0.05f;
     public float camShakeLength = 0.1f;
@@ -27,15 +26,18 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
 
     float timeToFire = 0;
     public Transform firePoint;
-    public Transform firePointHelper;
     public Transform aim;
-
+    public Transform shield;
 
     private Joystick fire;
+    private Joystick ability;
 
     AudioManager audioManager;
 
-    //public PhotonView photonView;
+    public GameObject cameraShake;
+
+    private bool shieldActive = false;
+
 
 
     void Awake()
@@ -46,19 +48,21 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
         }
         Arm = GameObject.FindWithTag("Arm").GetComponent<Transform>();
         fire = GameObject.FindWithTag("FireJoystick").GetComponent<FixedJoystick>();
+        ability = GameObject.FindWithTag("AbilityJoystick").GetComponent<FixedJoystick>();
     }
 
     void Start(){
-        camShake = GameMaster.gm.GetComponent<CameraShake>();
-        if(camShake == null){
+        camShake = cameraShake.GetComponent<CameraShake>();
+        if (camShake == null)
+        {
             Debug.LogError("No CameraShake script found on GM object.");
         }
 
-        audioManager = AudioManager.instance;
-        if(audioManager == null)
+        if (audioManager == null)
         {
-            Debug.LogError("no audimanager found");
+            audioManager = AudioManager.instance;
         }
+
     }
 
     void Update() {
@@ -71,111 +75,65 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
             }
         }
 
-    }
-
-    void FixedUpdate()
-    {
         if (photonView.isMine)
         {
-            if (Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.2){
+            if (Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.3){
                 aim.gameObject.SetActive(true);
             }else{
                 aim.gameObject.SetActive(false);
             }
 
-            if(Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.5 && Time.time > timeToFire){
+            bool wantsShield = Mathf.Abs(ability.Horizontal) + Mathf.Abs(ability.Vertical) > 0.1f;
+            if (wantsShield != shieldActive)
+            {
+                shieldActive = wantsShield;
+                photonView.RPC("Shield", PhotonTargets.AllBuffered, shieldActive);
+            }
+
+            if (Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.6 && Time.time > timeToFire){
                 timeToFire = Time.time +1/fireRate;
                 Shoot();
             }
         }
 
     }
+
+    [PunRPC]
+    void Shield(bool sh)
+    { 
+        shield.gameObject.SetActive(sh);
+    }
     
     void Shoot(){
-        Vector2 firePointPosition = new Vector2 (firePoint.position.x, firePoint.position.y);
-
+        Vector2 FirePointPosition = new Vector2 (firePoint.position.x, firePoint.position.y);
         Vector2 aimPointPosition = new Vector2 (aim.position.x, aim.position.y);
-        Vector2 helperPointPosition = new Vector2 (firePointHelper.position.x, firePointHelper.position.y);
-        RaycastHit2D hit = Physics2D.Raycast (helperPointPosition, aimPointPosition- firePointPosition, 100, whatToHit);
 
         if (Time.time >= timeToSpawnEffect)
         {
-            Vector3 hitPos;
-            Vector3 hitNormal;
-           /*
-            if (hit.collider != null) {
-                Enemy enemy = hit.collider.GetComponent<Enemy>();
-                if (enemy != null){
-                    enemy.DamageEnemy (Damage);
-                }
-            }
-
-            if(hit.collider == null)
-            {
-                hitPos = (aimPointPosition - mousePosition) * 100;
-                hitNormal = new Vector3(9999, 9999, 9999);
-            }else
-            {
-                hitPos = hit.point;
-                hitNormal = hit.normal;
-            }
-
-            */
-
-            //Effect(hitPos, hitNormal);
             timeToSpawnEffect = Time.time + 1/effectSpawnRate;
 
+            GameObject trail = PhotonNetwork.Instantiate("BulletTrail", FirePointPosition, firePoint.rotation, 0) as GameObject;
+            trail.GetComponent<Rigidbody2D>().AddForce((aimPointPosition - FirePointPosition) * 80f);
 
-
-
-            GameObject trail = PhotonNetwork.Instantiate("BulletTrail", firePointPosition, firePoint.rotation, 0) as GameObject;
-            trail.GetComponent<Rigidbody2D>().AddForce((aimPointPosition - firePointPosition) * 100f);
-            audioManager.PlaySound(weaponShootSound);
-            Transform clone = Instantiate(MuzzleFlashPrefab, firePoint.position, firePoint.rotation) as Transform;
-            float size = Random.Range(0.6f, 0.9f);
-            clone.localScale = new Vector3(size, size, size);
-            Destroy(clone.gameObject, 0.02f);
-
-            //DestroyTrail(trail);
+            photonView.RPC("ShootEffect", PhotonTargets.AllBuffered);
         }
-    }
-
-    /*
-    void Effect (Vector3 hitPos, Vector3 hitNormal){
-        trail = PhotonNetwork.Instantiate(BulletTrailPrefab.name, firePoint.position, firePoint.rotation, 0) as GameObject;
-        LineRenderer lr = trail.GetComponent<LineRenderer>();
-
-        if (lr != null)
+        if(camShake == null)
         {
-            lr.SetPosition(0, firePoint.position);
-            lr.SetPosition(1, hitPos);
+            Debug.Log("no camShake");
         }
-
-        photonView.RPC("DestroyTrail", PhotonTargets.AllBuffered);
-
-        if (hitNormal != new Vector3(9999, 9999, 9999))
-        {
-            Transform hitParticle = Instantiate(HitPrefab, hitPos, Quaternion.FromToRotation (Vector3.right, hitNormal)) as Transform;
-            Destroy(hitParticle.gameObject, 1f);
-        }
-
-        Transform clone = Instantiate (MuzzleFlashPrefab, firePoint.position, firePoint.rotation) as Transform;
-        float size = Random.Range (0.6f, 0.9f);
-        clone.localScale = new Vector3 (size, size, size);
-        Destroy (clone.gameObject, 0.02f);
-
         camShake.Shake(camShakeAmt, camShakeLength);
-
-        audioManager.PlaySound(weaponShootSound);
-
     }
-    
 
-    public void DestroyTrail(GameObject trail)
+    [PunRPC]
+    void ShootEffect()
     {
-        Destroy (trail.gameObject, .1f);
+        audioManager.PlaySound(weaponShootSound);
+        Transform clone = Instantiate(MuzzleFlashPrefab, firePoint.position, firePoint.rotation) as Transform;
+        float size = Random.Range(0.6f, 0.9f);
+        clone.localScale = new Vector3(size, size, size);
+        Destroy(clone.gameObject, 0.02f);
     }
-*/
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)

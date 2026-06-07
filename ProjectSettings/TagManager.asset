@@ -11,6 +11,8 @@ TagManager:
   - BtnFire
   - Arm
   - Enemy
+  - AbilityJoystick
+  - CameraShake
   layers:
   - Default
   - TransparentFX

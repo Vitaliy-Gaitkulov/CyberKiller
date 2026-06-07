@@ -49,19 +49,30 @@ public class AudioManager : MonoBehaviour
 
     void Awake()
     {
-        if(instance != null)
+        if (instance != null && instance != this)
         {
-            if(instance != null)
-            {
-                Destroy(this.gameObject);
-            }
+            Destroy(this.gameObject);  // Удаляет дублирующий экземпляр AudioManager
+            return;
+        }
+        instance = this;
+        DontDestroyOnLoad(this);  // Сохраняет единственный экземпляр между сценами
 
-        } else
+        // Удаление лишних AudioListener
+        EnsureSingleAudioListener();
+    }
+
+    void EnsureSingleAudioListener()
+    {
+        AudioListener[] listeners = FindObjectsOfType<AudioListener>();
+        if (listeners.Length > 1)
         {
-            instance = this;
-            DontDestroyOnLoad(this);
+            for (int i = 1; i < listeners.Length; i++)
+            {
+                Destroy(listeners[i]);
+            }
         }
     }
+
 
     void Start() {
         for (int i = 0; i < sounds.Length; i++){
