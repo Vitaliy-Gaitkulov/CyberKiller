@@ -96,24 +96,20 @@ public class GameMaster : MonoBehaviour
 
     public void RespawnPlayer()
     {
-        GameObject playerInstance = PhotonNetwork.Instantiate(PlayerPrefab.name, spawnPoint.position, Quaternion.identity, 0);
-
-        AudioListener[] listeners = GameObject.FindObjectsOfType<AudioListener>();
-        if (listeners.Length == 0)
-        {
-            if (Camera.main != null && Camera.main.GetComponent<AudioListener>() == null)
-            {
-                Camera.main.gameObject.AddComponent<AudioListener>();
-            }
-            else if (playerInstance.GetComponent<AudioListener>() == null)
-            {
-                playerInstance.AddComponent<AudioListener>();
-            }
-        }
-
-        SceneCamera.SetActive(false);
-        GameCanvas.SetActive(false);
         RespawnMenu.SetActive(false);
+
+        if (LocalPlayer != null)
+        {
+            // Возрождаем существующего игрока на spawn point
+            LocalPlayer.GetComponent<PhotonView>().RPC("Respawn", PhotonTargets.AllBuffered, spawnPoint.position);
+        }
+        else
+        {
+            // Первый спавн — создаём нового игрока
+            PhotonNetwork.Instantiate(PlayerPrefab.name, spawnPoint.position, Quaternion.identity, 0);
+            SceneCamera.SetActive(false);
+            GameCanvas.SetActive(false);
+        }
     }
 
     public IEnumerator _RespawnPlayer()

@@ -1,13 +1,11 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Health : Photon.MonoBehaviour
 {
-
     public Image FillImage;
-
     public float HealthAmount;
 
     public PlayerMove plMove;
@@ -17,13 +15,14 @@ public class Health : Photon.MonoBehaviour
     public SpriteRenderer sr;
     public GameObject PlayerCanvas;
 
+    private bool isDead = false;
     AudioManager audioManager;
 
     private void Awake()
     {
         audioManager = AudioManager.instance;
 
-        if(photonView.isMine)
+        if (photonView.isMine)
         {
             GameMaster.Instance.LocalPlayer = this.gameObject;
         }
@@ -32,19 +31,21 @@ public class Health : Photon.MonoBehaviour
     [PunRPC]
     public void ReduceHealthBar(float amount)
     {
+        if (isDead) return;
+
         audioManager.PlaySound("Grunt");
         ModifyHealth(amount);
     }
 
-    [PunRPC]
     private void CheckHealth()
     {
         FillImage.fillAmount = HealthAmount / 100f;
-        if(photonView.isMine && HealthAmount <= 0)
-        {;
-            GameMaster.Instance.EnableRespawn();
+        if (photonView.isMine && HealthAmount <= 0 && !isDead)
+        {
+            isDead = true;
             plMove.DisableInput = true;
-            this.GetComponent<PhotonView>().RPC("Dead", PhotonTargets.AllBuffered);
+            photonView.RPC("Dead", PhotonTargets.AllBuffered);
+            GameMaster.Instance.EnableRespawn();
         }
     }
 
@@ -53,30 +54,33 @@ public class Health : Photon.MonoBehaviour
         plMove.DisableInput = false;
     }
 
-
-
     [PunRPC]
     private void Dead()
     {
-        rb.gravityScale = 1;
+        rb.gravityScale = 0;
+        rb.velocity = Vector2.zero;
         bc.enabled = false;
         cc.enabled = false;
         sr.enabled = false;
         PlayerCanvas.SetActive(false);
     }
 
+    // Вызывается из GameMaster.RespawnPlayer() по RPC
     [PunRPC]
-    private void Respawn()
+    public void Respawn(Vector3 spawnPos)
     {
+        isDead = false;
+        HealthAmount = 100f;
+        FillImage.fillAmount = 1f;
         rb.gravityScale = 3;
+        rb.velocity = Vector2.zero;
         bc.enabled = true;
         cc.enabled = true;
         sr.enabled = true;
         PlayerCanvas.SetActive(true);
-        FillImage.fillAmount = 1f;
-        HealthAmount = 100f;
+        transform.position = spawnPos;
+        GetComponent<Player>()?.ResetFallFlag();
         EnableInput();
-
     }
 
     private void ModifyHealth(float amount)

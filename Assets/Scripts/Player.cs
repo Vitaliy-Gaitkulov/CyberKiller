@@ -12,6 +12,7 @@ public class Player : Photon.MonoBehaviour
 
     public PlayerStats stats = new PlayerStats();
     public GameObject statusIndicator;
+    private bool hasFallen = false;
 
     void Start()
     {
@@ -49,11 +50,17 @@ public class Player : Photon.MonoBehaviour
     {
         if (photonView.isMine)
         {
-            if (transform.position.y <= fallBoundary)
+            if (!hasFallen && transform.position.y <= fallBoundary)
             {
+                hasFallen = true;
                 this.GetComponent<PhotonView>().RPC("ReduceHealthBar", PhotonTargets.AllBuffered, 999999f);
             }
         }
+    }
+
+    public void ResetFallFlag()
+    {
+        hasFallen = false;
     }
 
     [PunRPC]
@@ -80,6 +87,15 @@ public class Player : Photon.MonoBehaviour
         {
             statusIndicator.GetComponent<StatusIndicator>().SetHealth(stats.curHealth, stats.maxHealth);
         }
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(
+            new Vector3(-100f, fallBoundary, 0f),
+            new Vector3(100f, fallBoundary, 0f)
+        );
     }
 
     public class PlayerStats
