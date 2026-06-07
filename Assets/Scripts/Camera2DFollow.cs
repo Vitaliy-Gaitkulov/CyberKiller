@@ -5,7 +5,7 @@ using UnityEngine;
 //{
     public class Camera2DFollow : Photon.MonoBehaviour
     {
-        public PhotonView photonView;
+        // public PhotonView photonView;
         public Transform target;
         public float damping = 1;
         public float lookAheadFactor = 3;
@@ -36,8 +36,8 @@ using UnityEngine;
         // Update is called once per frame
         private void Update()
         {
-            if (photonView.isMine)
-            {
+            // if (photonView.isMine)
+            // {
                 if (target == null)
                 {
                     FindPlayer();
@@ -65,7 +65,7 @@ using UnityEngine;
                 transform.position = newPos;
 
                 m_LastTargetPosition = target.position;
-            }
+            // }
         }
 
         void FindPlayer(){

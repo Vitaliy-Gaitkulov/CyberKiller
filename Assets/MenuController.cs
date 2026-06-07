@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class MenuController : MonoBehaviour
@@ -15,7 +13,8 @@ public class MenuController : MonoBehaviour
 
     [SerializeField] private GameObject StartButton;
 
-    public Random rnd = new Random();
+    public int rnd;
+    // public int rnd = 9; 
     public int value;
 
     //Получить случайное число (в диапазоне от 0 до 10)
@@ -25,21 +24,22 @@ public class MenuController : MonoBehaviour
     private void Awake()
     {
         value = Random.Range(0, 1000);
-
+        // rnd = Random.Range(0, 10);
+        
         PhotonNetwork.ConnectUsingSettings(VersionName);
         UsernameInput.text = "user" + value.ToString();
-
+       
     }
 
     private void Start()
     {
-
     }
 
     private void OnConnectedToMaster()
-    {
+    {Debug.Log("Connected????????????");
         PhotonNetwork.JoinLobby(TypedLobby.Default);
         Debug.Log("Connected");
+         Debug.Log("Connected!!!!!!!!!!!!!!!!!!!!!");
     }
 
     public void ChangeUserNameInput()

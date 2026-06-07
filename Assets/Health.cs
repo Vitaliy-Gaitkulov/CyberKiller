@@ -30,7 +30,7 @@ public class Health : Photon.MonoBehaviour
     }
 
     [PunRPC]
-    public void ReduceHealth(float amount)
+    public void ReduceHealthBar(float amount)
     {
         audioManager.PlaySound("Grunt");
         ModifyHealth(amount);
@@ -41,7 +41,7 @@ public class Health : Photon.MonoBehaviour
     {
         FillImage.fillAmount = HealthAmount / 100f;
         if(photonView.isMine && HealthAmount <= 0)
-        {
+        {;
             GameMaster.Instance.EnableRespawn();
             plMove.DisableInput = true;
             this.GetComponent<PhotonView>().RPC("Dead", PhotonTargets.AllBuffered);

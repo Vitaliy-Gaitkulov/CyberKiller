@@ -1,4 +1,151 @@
-﻿using System.Collections;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class GameMaster : MonoBehaviour
+{
+    public GameObject PlayerPrefab;
+    public GameObject skinImage;
+    private int selectedSkin = 0;
+    public List<GameObject> skinsObject = new List<GameObject>();
+    public List<Sprite> skinsImage = new List<Sprite>();
+
+    public GameObject GameCanvas;
+    public GameObject SceneCamera;
+
+    public static GameMaster Instance;
+    public static GameMaster gm;
+
+    private AudioSource audioData;
+    [SerializeField] private int maxLives = 3;
+    public static int _remainingLives;
+    public static int RemainingLives => _remainingLives;
+
+    [SerializeField] private int startingMoney;
+    public static int Money;
+    [HideInInspector] public GameObject LocalPlayer;
+
+    public Text RespawnTimerText;
+    public GameObject RespawnMenu;
+    private float timerAmount = 5f;
+    private bool runSpawnTimer = false;
+
+    public Transform spawnPoint;
+    public float spawnDelay = 3f;
+    public Transform spawnPrefab;
+    public string respawnCountdownSoundName = "RespawnCountdown";
+    public string spawnSoundName = "Spawn";
+    public Text PingText;
+    public CameraShake cameraShake;
+    [SerializeField] private GameObject gameOverUI;
+    [SerializeField] private GameObject upgradeMenu;
+    private AudioManager audioManager;
+    public GameObject disconnectUI;
+    private bool off = false;
+    public GameObject PlayerFeed;
+    public GameObject FeedGrid;
+
+    void Awake()
+    {
+        Instance = this;
+        GameCanvas.SetActive(true);
+        if (gm == null)
+        {
+            gm = this;
+        }
+    }
+
+    void Start()
+    {
+        _remainingLives = maxLives;
+        Money = startingMoney;
+
+        audioManager = AudioManager.instance;
+
+        // Первый респавн при старте игры
+        /*RespawnPlayer();*/
+    }
+
+    private void Update()
+    {
+        PingText.text = "Ping: " + PhotonNetwork.GetPing();
+
+        if (runSpawnTimer)
+        {
+            timerAmount -= Time.deltaTime;
+            RespawnTimerText.text = "Respawning in " + Mathf.Ceil(timerAmount).ToString();
+            if (timerAmount <= 0)
+            {
+                runSpawnTimer = false;
+                StartCoroutine(_RespawnPlayer());
+            }
+        }
+    }
+
+    public void EnableRespawn()
+    {
+        timerAmount = spawnDelay;
+        runSpawnTimer = true;
+        RespawnMenu.SetActive(true);
+        audioManager.PlaySound(respawnCountdownSoundName);
+    }
+
+    // Новый метод, вызываемый при нажатии кнопки "Старт"
+    public void OnStartButtonPressed()
+    {
+        runSpawnTimer = false;  // Остановка таймера, если он запущен
+        RespawnPlayer();        // Респавн игрока
+        RespawnMenu.SetActive(false); // Закрытие окна респавна
+    }
+
+    public void RespawnPlayer()
+    {
+        GameObject playerInstance = PhotonNetwork.Instantiate(PlayerPrefab.name, spawnPoint.position, Quaternion.identity, 0);
+
+        AudioListener[] listeners = GameObject.FindObjectsOfType<AudioListener>();
+        if (listeners.Length == 0)
+        {
+            if (Camera.main != null && Camera.main.GetComponent<AudioListener>() == null)
+            {
+                Camera.main.gameObject.AddComponent<AudioListener>();
+            }
+            else if (playerInstance.GetComponent<AudioListener>() == null)
+            {
+                playerInstance.AddComponent<AudioListener>();
+            }
+        }
+
+        SceneCamera.SetActive(false);
+        GameCanvas.SetActive(false);
+        RespawnMenu.SetActive(false);
+    }
+
+    public IEnumerator _RespawnPlayer()
+    {
+        yield return new WaitForSeconds(spawnDelay);
+
+        audioManager.PlaySound(spawnSoundName);
+        RespawnPlayer();
+
+        Transform clone = Instantiate(spawnPrefab, spawnPoint.position, spawnPoint.rotation);
+        Destroy(clone.gameObject, 3f);
+    }
+
+    [PunRPC]
+    public static void KillPlayer(Player player)
+    {
+        Destroy(player.gameObject);
+        gm.EnableRespawn();
+    }
+}
+
+
+
+
+/*
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,42 +162,21 @@ public class GameMaster : MonoBehaviour
 
     public void NextOption()
     {
-        selectedSkin = selectedSkin + 1;
-        if(selectedSkin == skinsImage.Count)
-        {
-            selectedSkin = 0;
-        }
-        PlayerPrefab = skinsObject[selectedSkin];
-        skinImage.GetComponent<Image>().sprite = skinsImage[selectedSkin];
+        selectedSkin = (selectedSkin + 1) % skinsImage.Count;
+        UpdateSkin();
     }
-    
+
     public void BackOption()
     {
-        selectedSkin = selectedSkin - 1;
-        if(selectedSkin < 0)
-        {
-            selectedSkin = skinsImage.Count - 1;
-        }
+        selectedSkin = (selectedSkin - 1 + skinsImage.Count) % skinsImage.Count;
+        UpdateSkin();
+    }
+
+    private void UpdateSkin()
+    {
         PlayerPrefab = skinsObject[selectedSkin];
         skinImage.GetComponent<Image>().sprite = skinsImage[selectedSkin];
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public GameObject GameCanvas;
     public GameObject SceneCamera;
@@ -58,7 +184,7 @@ public class GameMaster : MonoBehaviour
     public static GameMaster Instance;
 
     public static GameMaster gm;
-    AudioSource audioData;
+    private AudioSource audioData;
 
     [SerializeField]
     private int maxLives = 3;
@@ -67,6 +193,7 @@ public class GameMaster : MonoBehaviour
     {
         get { return _remainingLives; }
     }
+
     [SerializeField]
     private int startingMoney;
     public static int Money;
@@ -74,28 +201,23 @@ public class GameMaster : MonoBehaviour
     [HideInInspector] public GameObject LocalPlayer;
     public Text RespawnTimerText;
     public GameObject RespawnMenu;
-    private float TimerAmount = 2f;
-    private bool RunSpawnTimer = false;
+    private float timerAmount = 5f;
+    private bool runSpawnTimer = false;
 
-    public Transform playerPrefab;
     public Transform spawnPoint;
     public float spawnDelay;
     public Transform spawnPrefab;
     public string respawnCountdownSoundName = "RespawnCountdown";
     public string spawnSoundName = "Spawn";
     public Text PingText;
-    public string gameOverSoundName = "GameOver";
     public CameraShake cameraShake;
     [SerializeField]
     private GameObject gameOverUI;
     [SerializeField]
     private GameObject upgradeMenu;
-    [SerializeField]
-    public delegate void UpgradeMenuCallback(bool active);
-    public UpgradeMenuCallback onToggleUpgradeMenu;
     private AudioManager audioManager;
     public GameObject disconnectUI;
-    private bool Off = false;
+    private bool off = false;
     public GameObject PlayerFeed;
     public GameObject FeedGrid;
 
@@ -105,32 +227,13 @@ public class GameMaster : MonoBehaviour
         GameCanvas.SetActive(true);
         if (gm == null)
         {
-            gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
+            gm = this;
         }
     }
 
-    private void StartRespawn()
+    void Start()
     {
-        TimerAmount = 0;
-        RespawnTimerText.text = "Respawning in " + TimerAmount.ToString();
-        Debug.Log(TimerAmount);
-
-        if (TimerAmount <= 0)
-        {
-
-            LocalPlayer.GetComponent<PhotonView>().RPC("Respawn", PhotonTargets.AllBuffered);
-            LocalPlayer.GetComponent<Health>().EnableInput();
-            RespawnLocation();
-            RespawnMenu.SetActive(false);
-            RunSpawnTimer = false;
-            Debug.Log("end respawn");
-        }
-    }
-
-    void Start(){
-
         _remainingLives = maxLives;
-
         Money = startingMoney;
 
         audioManager = AudioManager.instance;
@@ -140,119 +243,69 @@ public class GameMaster : MonoBehaviour
     {
         PingText.text = "Ping: " + PhotonNetwork.GetPing();
 
-        if (RunSpawnTimer)
+        if (runSpawnTimer)
         {
-            StartRespawn();
+            timerAmount -= Time.deltaTime;
+            RespawnTimerText.text = "Respawning in " + Mathf.Ceil(timerAmount).ToString();
+            if (timerAmount <= 0)
+            {
+                RespawnPlayer();
+            }
         }
     }
 
     public void EnableRespawn()
     {
-        TimerAmount = 5f;
-        RunSpawnTimer = true;
+        timerAmount = 5f;
+        runSpawnTimer = true;
         RespawnMenu.SetActive(true);
+        audioManager.PlaySound(respawnCountdownSoundName);
     }
 
-    public void RespawnLocation()
+    public void RespawnPlayer()
     {
-        float randomValue = Random.Range(-3, 5f);
-        LocalPlayer.transform.localPosition = new Vector2(randomValue, 3f);
-    }
+        // Создание игрока
+        GameObject playerInstance = PhotonNetwork.Instantiate(PlayerPrefab.name, spawnPoint.position, Quaternion.identity, 0);
 
-    public void CheckInputOff()
-    {
-        if (Off)
+        // Проверка на наличие активных AudioListener в сцене
+        AudioListener[] listeners = GameObject.FindObjectsOfType<AudioListener>();
+
+        // Если нет активного AudioListener, добавляем его к игроку
+        if (listeners.Length == 0)
         {
-            disconnectUI.SetActive(false);
-            Off = false;
-        }else if(!Off)
-        {
-            disconnectUI.SetActive(true);
-            Off = true;
+            // Проверяем, есть ли AudioListener у главной камеры
+            if (Camera.main != null && Camera.main.GetComponent<AudioListener>() == null)
+            {
+                Camera.main.gameObject.AddComponent<AudioListener>();
+            }
+            // Если нет главной камеры, добавляем AudioListener к игроку
+            else if (playerInstance.GetComponent<AudioListener>() == null)
+            {
+                playerInstance.AddComponent<AudioListener>();
+            }
         }
-    }
 
-    public void LeaveRoom()
-    {
-        PhotonNetwork.LeaveRoom();
-        PhotonNetwork.LoadLevel("MainMenu");
-    }
-
-    private void OnPhotonPlayerConnected(PhotonPlayer player)
-    {
-        GameObject obj = Instantiate(PlayerFeed, new Vector2(0, 0), Quaternion.identity);
-        obj.transform.SetParent(FeedGrid.transform, false);
-        obj.GetComponent<Text>().text = player.name + "joined the game";
-        obj.GetComponent<Text>().color = Color.green;
-    }
-    private void OnPhotonPlayerDisconnected(PhotonPlayer player)
-    {
-/*        if (photonView.isMine)
-        {
-            SceneCamera.SetActive(true);
-        }*/
-        GameObject obj = Instantiate(PlayerFeed, new Vector2(0, 0), Quaternion.identity);
-        obj.transform.SetParent(FeedGrid.transform, false);
-        obj.GetComponent<Text>().text = player.name + "left the game";
-        obj.GetComponent<Text>().color = Color.red;
-    }
-
-
-    public Transform enemyDeathParticles;
-
-/*    public void ToggleUpgradeMenu()
-    {
-        upgradeMenu.SetActive(!upgradeMenu.activeSelf);
-        waveSpawner.enabled = !upgradeMenu.activeSelf;
-        onToggleUpgradeMenu.Invoke(upgradeMenu.activeSelf);
-    }
-
-    public void EndGame()
-    {
-        audioManager.PlaySound(gameOverSoundName);
-
-        Debug.Log("Game Over");
-        gameOverUI.SetActive(true);
-    }*/
-
-    public void SpawnPlayer()
-    {
-        PhotonNetwork.Instantiate(PlayerPrefab.name, new Vector3(spawnPoint.position.x, spawnPoint.position.y), Quaternion.identity, 0);
+        // Отключение камеры сцены
         SceneCamera.SetActive(false);
         GameCanvas.SetActive(false);
     }
 
-    /*    public IEnumerator _RespawnPlayer (){
-            audioManager.PlaySound(respawnCountdownSoundName);
-            yield return new WaitForSeconds (spawnDelay);
+    public IEnumerator _RespawnPlayer ()
+    {
+        audioManager.PlaySound(respawnCountdownSoundName);
+        yield return new WaitForSeconds (spawnDelay);
 
-            audioManager.PlaySound(spawnSoundName);
-            SpawnPlayer();
-           // Instantiate (playerPrefab, spawnPoint.position, spawnPoint.rotation);
+        audioManager.PlaySound(spawnSoundName);
+        RespawnPlayer();
 
-            Transform clone = Instantiate(spawnPrefab, spawnPoint.position, spawnPoint.rotation) as Transform;
-            Destroy (clone.gameObject, 3f);
-        }*/
+        Transform clone = Instantiate(spawnPrefab, spawnPoint.position, spawnPoint.rotation);
+        Destroy(clone.gameObject, 3f);
+    }
 
-    /*    [PunRPC]
-        public static void KillPlayer(Player player)
-        {
-            Destroy(player.gameObject);
-        }*/
-    /*
-        public static void KillEnemy (Enemy enemy){
-            gm._KillEnemy(enemy);
-        }
-
-        public void _KillEnemy (Enemy _enemy){
-            audioManager.PlaySound(_enemy.deathSoundName);
-
-            Money += _enemy.moneyDrop;
-            audioManager.PlaySound("Money");
-            Transform _clone = Instantiate(_enemy.deathParticles, _enemy.transform.position, Quaternion.identity) as Transform;
-            Destroy(_clone.gameObject, 5f);
-            cameraShake.Shake(_enemy.shakeAmt, _enemy.shakeLength);
-            Destroy (_enemy.gameObject);
-        }*/
-
+    [PunRPC]
+    public static void KillPlayer(Player player)
+    {
+        Destroy(player.gameObject);
+    }
 }
+*/
