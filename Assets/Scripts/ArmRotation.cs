@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,30 +9,27 @@ public class ArmRotation : Photon.MonoBehaviour
     public Joystick AbilityJoystick;
     public Vector3 difference;
 
-    void Awake() 
+    void Awake()
     {
-        if (true)
-        {
-            FireJoystick = GameObject.FindWithTag("FireJoystick").GetComponent<FixedJoystick>();
-            AbilityJoystick = GameObject.FindWithTag("AbilityJoystick").GetComponent<FixedJoystick>();
-        }
+        FireJoystick = GameObject.FindWithTag("FireJoystick").GetComponent<FixedJoystick>();
+        AbilityJoystick = GameObject.FindWithTag("AbilityJoystick").GetComponent<FixedJoystick>();
     }
+
     void Update()
     {
-      //  if(AbilityJoystick.Horizontal != 0f || AbilityJoystick.Vertical != 0f)
-       // {
-            Debug.Log(AbilityJoystick.Horizontal);
+        if (AbilityJoystick.Horizontal != 0f || AbilityJoystick.Vertical != 0f)
+        {
             CheckInputAbility();
-       // }
+        }
         CheckInputArm();
     }
 
     void CheckInputArm()
     {
         difference = new Vector3(FireJoystick.Horizontal, FireJoystick.Vertical);
-        difference.Normalize ();
+        difference.Normalize();
 
-        float rotZ = Mathf.Atan2 (difference.y, difference.x) * Mathf.Rad2Deg;
+        float rotZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f, 0f, rotZ + rotationOffset);
     }
 

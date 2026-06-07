@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class MenuController : MonoBehaviour
@@ -14,49 +14,26 @@ public class MenuController : MonoBehaviour
     [SerializeField] private GameObject StartButton;
 
     public int rnd;
-    // public int rnd = 9; 
     public int value;
-
-    //Получить случайное число (в диапазоне от 0 до 10)
-
-
 
     private void Awake()
     {
         value = Random.Range(0, 1000);
-        // rnd = Random.Range(0, 10);
-        
         PhotonNetwork.ConnectUsingSettings(VersionName);
         UsernameInput.text = "user" + value.ToString();
-       
     }
 
-    private void Start()
-    {
-    }
+    private void Start() { }
 
     private void OnConnectedToMaster()
-    {Debug.Log("Connected????????????");
+    {
         PhotonNetwork.JoinLobby(TypedLobby.Default);
-        Debug.Log("Connected");
-         Debug.Log("Connected!!!!!!!!!!!!!!!!!!!!!");
     }
 
-    public void ChangeUserNameInput()
-    {
-        if(UsernameInput.text.Length >= 3)
-        {
-            //StartButton.SetActive(true);
-        }
-        else
-        {
-            //StartButton.SetActive(false);
-        }
-    }
+    public void ChangeUserNameInput() { }
 
     public void SetUserName()
     {
-        //usernameMenu.SetActive(false);
         PhotonNetwork.playerName = UsernameInput.text;
     }
 
@@ -76,14 +53,13 @@ public class MenuController : MonoBehaviour
 
     public void JoinGame()
     {
-        if(JoinGameInput.text == "")
+        if (JoinGameInput.text == "")
         {
             JoinGameInput.text = "def";
         }
-        
+
         if (UsernameInput.text.Length >= 3)
         {
-            Debug.Log("JoinOrCreateRoom");
             SetUserName();
             RoomOptions roomOptions = new RoomOptions();
             roomOptions.maxPlayers = 5;
@@ -100,6 +76,4 @@ public class MenuController : MonoBehaviour
     {
         PhotonNetwork.LoadLevel("MainMenu");
     }
-
-
 }

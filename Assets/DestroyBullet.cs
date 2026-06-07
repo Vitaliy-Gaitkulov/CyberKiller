@@ -28,7 +28,7 @@ public class DestroyBullet : Photon.MonoBehaviour
         {
             if (target.tag == "Player")
             {
-                target.RPC("ReduceHealth", PhotonTargets.AllBuffered, BulletDamage);
+                target.RPC("ReduceHealthBar", PhotonTargets.AllBuffered, BulletDamage);
             }
 
         }

@@ -81,18 +81,8 @@ public class Health : Photon.MonoBehaviour
 
     private void ModifyHealth(float amount)
     {
-        
-        if (photonView.isMine)
-        {
-            HealthAmount -= amount;
-            FillImage.fillAmount -= amount;
-        }
-        else
-        {
         HealthAmount -= amount;
-        FillImage.fillAmount -= amount;
-        }
-
+        FillImage.fillAmount = HealthAmount / 100f;
         CheckHealth();
     }
 }

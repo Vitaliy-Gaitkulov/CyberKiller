@@ -36,6 +36,8 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
 
     public GameObject cameraShake;
 
+    private bool shieldActive = false;
+
 
 
     void Awake()
@@ -81,13 +83,11 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
                 aim.gameObject.SetActive(false);
             }
 
-            if (Mathf.Abs(ability.Horizontal) + Mathf.Abs(ability.Vertical) > 0.1)
+            bool wantsShield = Mathf.Abs(ability.Horizontal) + Mathf.Abs(ability.Vertical) > 0.1f;
+            if (wantsShield != shieldActive)
             {
-                photonView.RPC("Shield", PhotonTargets.AllBuffered, true);
-            }
-            else
-            {
-                photonView.RPC("Shield", PhotonTargets.AllBuffered, false);
+                shieldActive = wantsShield;
+                photonView.RPC("Shield", PhotonTargets.AllBuffered, shieldActive);
             }
 
             if (Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.6 && Time.time > timeToFire){
