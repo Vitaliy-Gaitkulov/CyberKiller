@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: PhotonServerSettings
   m_EditorClassIdentifier: 
   AppID: 439cf526-8d73-4b9b-b739-b31ad41047d7
-  VoiceAppID: 
-  ChatAppID: 439cf526-8d73-4b9b-b739-b31ad41047d7
+  VoiceAppID:
+  ChatAppID:
   HostType: 1
   PreferredRegion: 0
   EnabledRegions: -1
@@ -27,26 +27,5 @@ MonoBehaviour:
   PunLogging: 0
   NetworkLogging: 1
   RunInBackground: 1
-  RpcList:
-  - Chat
-  - ColorRpc
-  - DestroyRpc
-  - DoJump
-  - Flash
-  - InstantiateRpc
-  - Marco
-  - PickupItemInit
-  - Polo
-  - PunPickup
-  - PunPickupSimple
-  - PunRespawn
-  - RequestForPickupItems
-  - RequestForPickupTimes
-  - TaggedPlayer
-  - Flip
-  - CheckInputArm
-  - DestroyTrail
-  - Shoot
-  - DamagePlayer
-  - RegenHealth
+  RpcList: []
   DisableAutoOpenWizard: 1
