@@ -55,6 +55,13 @@ ExportedObj/
 # Unity3D generated file on crash reports
 sysinfo.txt
 
+# Local archives and backups
+Assets_old/
+*.zip
+
+# Logs
+/[Ll]ogs/
+
 # Builds
 *.apk
 *.aab
