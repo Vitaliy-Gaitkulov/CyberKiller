@@ -1,0 +1,16 @@
+# Unity YAML files — use UnityYAMLMerge for smart scene/prefab merging
+*.unity merge=unityyamlmerge
+*.prefab merge=unityyamlmerge
+*.asset merge=unityyamlmerge
+*.meta merge=unityyamlmerge
+*.controller merge=unityyamlmerge
+*.anim merge=unityyamlmerge
+
+# Binary files — no merge, always take one side
+*.png binary
+*.jpg binary
+*.mp3 binary
+*.wav binary
+*.apk binary
+*.dll binary
+*.pdb binary

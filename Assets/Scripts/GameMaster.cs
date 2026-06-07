@@ -126,7 +126,7 @@ public class GameMaster : MonoBehaviour
     [PunRPC]
     public static void KillPlayer(Player player)
     {
-        Destroy(player.gameObject);
-        gm.EnableRespawn();
+        // Не уничтожаем объект — Health.Dead() уже скрыл игрока.
+        // EnableRespawn вызывается из Health.CheckHealth напрямую.
     }
 }

@@ -42,6 +42,7 @@ public class MenuController : MonoBehaviour
     {
         isConnected = false;
         SetStatus("Нет соединения");
+        PhotonNetwork.LoadLevel("MainMenu");
     }
 
     public void ChangeUserNameInput() { }
