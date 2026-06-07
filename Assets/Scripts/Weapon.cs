@@ -42,7 +42,9 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
 
     void Awake()
     {
-        //firePoint = transform.Find("FirePoint");
+        // Выключаем щит сразу — до первого кадра, чтобы пули не попадали в него при спавне
+        if (shield != null) shield.gameObject.SetActive(false);
+
         if (firePoint == null){
             Debug.LogError ("No firePoint?");
         }
@@ -63,6 +65,9 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
             audioManager = AudioManager.instance;
         }
 
+        // Гарантируем что щит выключен при спавне независимо от состояния в префабе
+        shieldActive = false;
+        if (shield != null) shield.gameObject.SetActive(false);
     }
 
     void Update() {
@@ -87,7 +92,7 @@ public class Weapon : Photon.MonoBehaviour, IPunObservable
             if (wantsShield != shieldActive)
             {
                 shieldActive = wantsShield;
-                photonView.RPC("Shield", PhotonTargets.AllBuffered, shieldActive);
+                photonView.RPC("Shield", PhotonTargets.All, shieldActive);
             }
 
             if (Mathf.Abs(fire.Horizontal) + Mathf.Abs(fire.Vertical) > 0.6 && Time.time > timeToFire){
