@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player : Photon.MonoBehaviour
 {
-    public int fallBoundary = -20;
+    public int fallBoundary = -200;
     public string deathSoundName = "DeathVoice";
     public string damageSoundName = "Grunt";
     private AudioManager audioManager;
